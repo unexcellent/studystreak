@@ -1,10 +1,8 @@
 #![allow(dead_code)] // TODO: remove
 slint::include_modules!();
 
-mod module;
-mod sheet;
-mod task;
-mod attempt;
+#[path ="structs/mod.rs"]
+mod structs;
 
 fn main() -> Result<(), slint::PlatformError> {
     let ui = AppWindow::new()?;
