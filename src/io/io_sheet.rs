@@ -5,8 +5,8 @@ use super::io_task::IoTask;
 
 #[derive(Debug, Deserialize, PartialEq)]
 pub struct IoSheet {
-    pub tasks_path: PathBuf,
-    pub solutions_path: Option<PathBuf>,
+    pub tasks_path: String,
+    pub solutions_path: Option<String>,
     pub tasks: HashMap<String, IoTask>,
 }
 
@@ -16,8 +16,8 @@ pub mod test_defaults {
     impl IoSheet {
         pub fn test_default1() -> IoSheet {
             IoSheet {
-                tasks_path: PathBuf::from("/path/to/tasks.pdf"),
-                solutions_path: Some(PathBuf::from("/path/to/solutions.pdf")),
+                tasks_path: "/path/to/tasks.pdf".to_owned(),
+                solutions_path: Some("/path/to/solutions.pdf".to_owned()),
                 tasks: HashMap::from([("1.".to_owned(), IoTask::test_default1())]),
             }
         }
