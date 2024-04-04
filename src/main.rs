@@ -1,4 +1,10 @@
+#![allow(dead_code)] // TODO: remove
 slint::include_modules!();
+
+mod module;
+mod sheet;
+mod task;
+mod attempt;
 
 fn main() -> Result<(), slint::PlatformError> {
     let ui = AppWindow::new()?;
