@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use std::collections::{HashMap, HashSet};
 
 use super::attempt::{Attempt, UnsupportedAttemptStringError};
 use super::super::io::io_task::IoTask;
@@ -26,6 +26,18 @@ impl Task {
             attempts,
             subtasks
         })
+    }
+    pub fn compile_topics(&self) -> HashSet<&String> {
+        let mut topics = HashSet::new();
+        if self.topic.is_some() {
+            topics.insert(self.topic.as_ref().unwrap());
+        }
+
+        self.subtasks
+            .iter()
+            .for_each(|(_, t)| topics.extend(t.compile_topics()));
+
+        topics
     }
 }
 
@@ -62,4 +74,15 @@ pub mod tests {
         )
     }
 
+    #[test]
+    fn test_compile_topics() {
+        assert_eq!(
+            Task::test_default2().compile_topics(),
+            HashSet::from([&"Tractors".to_owned()])
+        );
+        assert_eq!(
+            Task::test_default1().compile_topics(),
+            HashSet::from([&"Vectors".to_owned(), &"Tractors".to_owned()])
+        );
+    }
 }
