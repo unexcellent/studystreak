@@ -1,4 +1,4 @@
-use std::{collections::HashMap, path::PathBuf};
+use std::{collections::{HashMap, HashSet}, path::PathBuf};
 
 use crate::io::io_sheet::IoSheet;
 
@@ -28,6 +28,15 @@ impl Sheet {
             tasks,
         } )
     }
+    pub fn compile_topics(&self) -> HashSet<&String> {
+        let mut topics = HashSet::new();
+
+        self.tasks
+            .iter()
+            .for_each(|(_, t)| topics.extend(t.compile_topics()));
+
+        topics
+    }
 }
 
 #[cfg(test)]
@@ -46,6 +55,8 @@ pub mod test_defaults {
 
 #[cfg(test)]
 pub mod tests {
+    use std::collections::HashSet;
+
     use super::*;
 
     #[test]
@@ -54,5 +65,13 @@ pub mod tests {
             Sheet::parse(&IoSheet::test_default1()).unwrap(),
             Sheet::test_default1()
         )
+    }
+
+    #[test]
+    fn test_compile_topics() {
+        assert_eq!(
+            Sheet::test_default1().compile_topics(),
+            HashSet::from([&"Vectors".to_owned(), &"Tractors".to_owned()])
+        );
     }
 }
