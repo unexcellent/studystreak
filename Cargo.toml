@@ -9,7 +9,7 @@ build = "build.rs"
 [dependencies]
 regex = "1.10.4"
 serde = {version="1.0.197", features=["derive"]}
-serde_yaml = "0.9.34"
+serde_json5 = "0.1.0"
 slint = "1.4"
 
 [build-dependencies]

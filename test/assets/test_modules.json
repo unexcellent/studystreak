@@ -1,0 +1,33 @@
+{
+    "schema_version": "1.0.0",
+    "modules": {
+        "math1": {
+            "sheets": {
+                "e01": {
+                    "tasks_path": "/path/to/tasks.pdf",
+                    "solutions_path": "/path/to/solution.pdf",
+                    "tasks": {
+                        "1.": {
+                            "topic": "Vectors",
+                            "attempts": [],
+                            "subtasks": {
+                                "a)": {
+                                    "attempts": ["x", "5/6", "v"],
+                                    "subtasks": {}
+                                },
+                                "b)": {
+                                    "topic": "Scalar Product",
+                                    "attempts": ["h", "-"],
+                                    "subtasks": {}
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "mech1": {
+            "sheets": {}
+        }
+    }
+}

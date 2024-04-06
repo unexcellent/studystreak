@@ -11,7 +11,7 @@ pub struct Module {
     pub topics: HashSet<String>,
 }
 impl Module {
-    pub fn parse(io_module: IoModule) -> Result<Module, UnsupportedAttemptStringError> {
+    pub fn parse(io_module: &IoModule) -> Result<Module, UnsupportedAttemptStringError> {
         let mut sheets = HashMap::new();
         for (k, v) in &io_module.sheets {
             sheets.insert(k.to_owned(), Sheet::parse(v)?);
@@ -50,7 +50,7 @@ pub mod tests {
     #[test]
     fn test_parse() {
         assert_eq!(
-            Module::parse(IoModule::test_default1()).unwrap(),
+            Module::parse(&IoModule::test_default1()).unwrap(),
             Module::test_default1()
         )
     }
