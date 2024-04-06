@@ -21,10 +21,7 @@ impl Sheet {
         }
         Ok( Sheet {
             tasks_path: PathBuf::from(&io_sheet.tasks_path),
-            solutions_path: match &io_sheet.solutions_path {
-                Some(path) => Some(PathBuf::from(&path)),
-                None => None
-            },
+            solutions_path: io_sheet.solutions_path.as_ref().map(|path| PathBuf::from(&path)),
             tasks,
         } )
     }

@@ -32,12 +32,11 @@ impl Attempt {
 
     fn parse_partially_correct(raw_attempt: &str) -> Attempt {
         let numbers: Vec<&str> = raw_attempt
-            .split("/")
-            .into_iter()
+            .split('/')
             .collect();
 
         Attempt::PartiallyCorrect(
-            numbers.get(0).unwrap().parse().unwrap(), 
+            numbers.first().unwrap().parse().unwrap(), 
             numbers.get(1).unwrap().parse().unwrap()
         )
     }
