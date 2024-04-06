@@ -6,7 +6,7 @@ macro_rules! regex_pattern {
     };
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Attempt {
     Correct,
     Incorrect,

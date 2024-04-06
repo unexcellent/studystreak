@@ -6,7 +6,7 @@ use super::task::Task;
 use super::attempt::UnsupportedAttemptStringError;
 
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 /// An exercise sheet (a single pdf file containing tasks)
 pub struct Sheet {
     pub tasks_path: PathBuf,
@@ -28,7 +28,7 @@ impl Sheet {
             tasks,
         } )
     }
-    pub fn compile_topics(&self) -> HashSet<&String> {
+    pub fn compile_topics(&self) -> HashSet<String> {
         let mut topics = HashSet::new();
 
         self.tasks
@@ -71,7 +71,7 @@ pub mod tests {
     fn test_compile_topics() {
         assert_eq!(
             Sheet::test_default1().compile_topics(),
-            HashSet::from([&"Vectors".to_owned(), &"Tractors".to_owned()])
+            HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
         );
     }
 }

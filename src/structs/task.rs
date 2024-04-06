@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use super::attempt::{Attempt, UnsupportedAttemptStringError};
 use super::super::io::io_task::IoTask;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Task {
     pub topic: Option<String>,
     pub attempts: Vec<Attempt>,
@@ -27,10 +27,10 @@ impl Task {
             subtasks
         })
     }
-    pub fn compile_topics(&self) -> HashSet<&String> {
+    pub fn compile_topics(&self) -> HashSet<String> {
         let mut topics = HashSet::new();
         if self.topic.is_some() {
-            topics.insert(self.topic.as_ref().unwrap());
+            topics.insert(self.topic.as_ref().unwrap().clone());
         }
 
         self.subtasks
@@ -78,11 +78,11 @@ pub mod tests {
     fn test_compile_topics() {
         assert_eq!(
             Task::test_default2().compile_topics(),
-            HashSet::from([&"Tractors".to_owned()])
+            HashSet::from(["Tractors".to_owned()])
         );
         assert_eq!(
             Task::test_default1().compile_topics(),
-            HashSet::from([&"Vectors".to_owned(), &"Tractors".to_owned()])
+            HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
         );
     }
 }
