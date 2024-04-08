@@ -3,14 +3,8 @@ import { StartPage } from "start_page.slint";
 
 export component MainPage inherits Rectangle {
     vertical-stretch: 1;
-    clip: true;
+    clip: false;
 
-    Rectangle {
-        y: State.active-page == "start" ? 0 : State.active-page < 0 ? - self.height - 1px : parent.height + 1px;
-        StartPage {}
-    }
-    Rectangle {
-        y: State.active-page == "module" ? 0 : State.active-page < 0 ? - self.height - 1px : parent.height + 1px;
-        background: gray;
-    }
+    if State.active-page == "start": StartPage {}
+    if State.active-page == "module": Rectangle {background: pink;}
 }

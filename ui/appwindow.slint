@@ -4,10 +4,12 @@ import { State } from "./global.slint";
 import { SearchBar } from "./containers/search_bar.slint";
 import { MainPage } from "./pages/main_page.slint";
 
+export { State }
+
 export component AppWindow inherits Window {
     Rectangle {
         height: 400px;
-        width: 600px;
+        width: 400px;
         background: blue;
 
         VerticalBox {

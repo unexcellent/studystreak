@@ -1,3 +1,6 @@
+import { SlintModule } from "./structs/module.slint";
+
 export global State {
     in-out property <string> active-page: "start";
+    in-out property <[SlintModule]> modules;
 }

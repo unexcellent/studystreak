@@ -1,8 +1,13 @@
 import { State } from "../global.slint";
+import { GridBox } from "std-widgets.slint";
+
+import { ModuleGrid } from "../containers/module_grid.slint";
 
 export component StartPage inherits Rectangle {
     vertical-stretch: 1;
     horizontal-stretch: 1;
 
     background: red;
+
+    ModuleGrid {}
 }
