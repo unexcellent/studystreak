@@ -6,24 +6,31 @@ export component ModuleGrid inherits Rectangle {
     horizontal-stretch: 1;
     padding: 5px;
 
-    property <length> tile_width: 80px;
+    property <length> tile_width: 120px;
     property <length> tile_heigth: tile_width;
 
     property <length> total_tile_width: (self.tile_width + self.padding) * State.modules.length + self.tile_width;
     property <int> row_count: floor(self.total_tile_width / self.width);
     property <int> col_count: floor(self.width / (self.tile_width + self.padding));
 
-    for module[index] in State.modules: Rectangle {
-        width: parent.tile_width;
-        height: parent.tile_heigth;
+    ScrollView {
+        width: parent.width;
+        height: parent.height;
+        viewport-width: parent.width;
+        viewport-height: (row_count + 1) * (parent.tile_heigth + parent.padding);
 
-        background: yellow;
-        x: parent.padding + mod(index, parent.col_count) * (parent.tile_width + parent.padding);
-        y: parent.padding + floor(index / parent.col_count) * (parent.tile_heigth + parent.padding);
-
-        Text {
-            text: index;
-            color: black;
+        for module[index] in State.modules: Rectangle {
+            width: root.tile_width;
+            height: root.tile_heigth;
+    
+            background: yellow;
+            x: root.padding + mod(index, root.col_count) * (root.tile_width + root.padding);
+            y: root.padding + floor(index / root.col_count) * (root.tile_heigth + root.padding);
+    
+            Text {
+                text: index;
+                color: black;
+            }
         }
     }
 }
