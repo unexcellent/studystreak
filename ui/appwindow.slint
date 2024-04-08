@@ -1,16 +1,42 @@
-import { Button, VerticalBox } from "std-widgets.slint";
+import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
 
 export component AppWindow inherits Window {
-    in-out property<int> counter: 42;
-    callback request-increase-value();
-    VerticalBox {
-        Text {
-            text: "Counter: \{root.counter}";
-        }
-        Button {
-            text: "Increase value";
-            clicked => {
-                root.request-increase-value();
+    in-out property <string> active-page;
+    active-page: "start";
+
+    Rectangle {
+        height: 400px;
+        width: 600px;
+        background: blue;
+
+        VerticalBox {
+            spacing: 0;
+            padding: 0;
+            Rectangle {
+                height: 50px;
+                Button {
+                    text: "switch";
+                    clicked => {
+                        if root.active-page == "start" {
+                            root.active-page = "module";
+                        } else {
+                            root.active-page = "start"
+                        }
+                    }
+                }
+            }
+            Rectangle {
+                vertical-stretch: 1;
+                clip: true;
+
+                Rectangle {
+                    y: root.active-page == "start" ? 0 : root.active-page < 0 ? - self.height - 1px : parent.height + 1px;
+                    background: red;
+                }
+                Rectangle {
+                    y: root.active-page == "module" ? 0 : root.active-page < 0 ? - self.height - 1px : parent.height + 1px;
+                    background: gray;
+                }
             }
         }
     }
