@@ -1,0 +1,15 @@
+import { State } from "../global.slint";
+
+export component MainPage inherits Rectangle {
+    vertical-stretch: 1;
+    clip: true;
+
+    Rectangle {
+        y: State.active-page == "start" ? 0 : State.active-page < 0 ? - self.height - 1px : parent.height + 1px;
+        background: red;
+    }
+    Rectangle {
+        y: State.active-page == "module" ? 0 : State.active-page < 0 ? - self.height - 1px : parent.height + 1px;
+        background: gray;
+    }
+}
