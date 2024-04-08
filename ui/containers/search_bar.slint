@@ -1,0 +1,19 @@
+import { Button } from "std-widgets.slint";
+
+import { State } from "../global.slint";
+
+export component SearchBar inherits Rectangle {
+    in-out property active-page <=> State.active-page;
+
+    height: 50px;
+    Button {
+        text: "switch";
+        clicked => {
+            if State.active-page == "start" {
+                State.active-page = "module";
+            } else {
+                State.active-page = "start"
+            }
+        }
+    }
+}
