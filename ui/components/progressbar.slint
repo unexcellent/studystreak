@@ -1,5 +1,33 @@
 import { ProgressValues } from "../structs/progress_values.slint";
 
+component EmptyBar inherits Rectangle {
+    background: gray;
+}
+
+component PopulatedBar inherits Rectangle {
+    in property <ProgressValues> values;
+    in property <int> total;
+    property <length> correct_width: self.values.correct / self.total * self.width;
+    property <length> with_help_width: self.values.with-help / self.total * self.width;
+    property <length> incorrect_width: self.values.incorrect / self.total * self.width;
+
+    Rectangle {
+        background: green;
+        x: 0; 
+        width: parent.correct_width;
+    }
+    Rectangle {
+        background: #dac82f;
+        x: parent.correct_width; 
+        width: parent.with_help_width;
+    }
+    Rectangle {
+        background: #d80d0d;
+        x: parent.correct_width + parent.with_help_width; 
+        width: parent.incorrect_width;
+    }
+}
+
 export component ProgressBar inherits Rectangle {
     in property <ProgressValues> values;
     height: self.width * 0.1;
@@ -8,7 +36,9 @@ export component ProgressBar inherits Rectangle {
         return self.values.correct + self.values.with-help + self.values.incorrect;
     }
 
-    if self.total() == 0: Rectangle {
-        background: gray;
+    if self.total() == 0: EmptyBar {}
+    if self.total() != 0: PopulatedBar {
+        values: parent.values;
+        total: parent.total();
     }
 }
