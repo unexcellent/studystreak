@@ -5,6 +5,17 @@ export component MainPage inherits Rectangle {
     vertical-stretch: 1;
     clip: false;
 
-    if State.active-page == "start": StartPage {}
-    if State.active-page == "module": Rectangle {background: pink;}
+    background: black;
+
+    Rectangle {
+        background: parent.background;
+        height: parent.border-radius;
+        y: parent.height - parent.border-radius;
+    }
+
+    HorizontalLayout {
+        padding: parent.border-radius;
+        if State.active-page == "start": StartPage {}
+        if State.active-page == "module": Rectangle {background: pink;}
+    }
 }

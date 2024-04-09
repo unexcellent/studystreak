@@ -1,12 +1,13 @@
 import { State } from "../global.slint";
 import { ScrollView } from "std-widgets.slint";
+import { ModuleTile } from "./module_tile.slint";
 
 export component ModuleGrid inherits Rectangle {
     vertical-stretch: 1;
     horizontal-stretch: 1;
-    padding: 5px;
+    padding: 15px;
 
-    property <length> tile_width: 120px;
+    property <length> tile_width: 150px;
     property <length> tile_heigth: tile_width;
 
     property <length> total_tile_width: (self.tile_width + self.padding) * State.modules.length + self.tile_width;
@@ -19,18 +20,14 @@ export component ModuleGrid inherits Rectangle {
         viewport-width: parent.width;
         viewport-height: (row_count + 1) * (parent.tile_heigth + parent.padding);
 
-        for module[index] in State.modules: Rectangle {
+        for module[index] in State.modules: ModuleTile {
             width: root.tile_width;
             height: root.tile_heigth;
     
-            background: yellow;
-            x: root.padding + mod(index, root.col_count) * (root.tile_width + root.padding);
-            y: root.padding + floor(index / root.col_count) * (root.tile_heigth + root.padding);
-    
-            Text {
-                text: index;
-                color: black;
-            }
+            x: mod(index, root.col_count) * (root.tile_width + root.padding);
+            y: floor(index / root.col_count) * (root.tile_heigth + root.padding);
+
+            module: module;
         }
     }
 }
