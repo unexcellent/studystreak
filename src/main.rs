@@ -30,7 +30,7 @@ fn populate_start_page(modules: &HashMap<String, Module>, ui: &AppWindow) {
         slint_modules.push(
             SlintModule {
                 name: SharedString::from(name),
-                progress: ProgressValues {correct: 1, with_help: 2, incorrect: 3}
+                progress: ProgressValues {correct: 0, with_help: 0, incorrect: 0}
             }
         );
     }

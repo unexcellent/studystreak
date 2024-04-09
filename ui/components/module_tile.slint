@@ -1,4 +1,5 @@
 import { SlintModule } from "../structs/module.slint";
+import { ProgressBar } from "progressbar.slint";
 
 export component ModuleTile inherits Rectangle {
     in-out property <SlintModule> module;
@@ -6,6 +7,7 @@ export component ModuleTile inherits Rectangle {
     border-width: 1px;
 
     padding: 10px;
+
     Text {
         text: module.name;
         color: white;
@@ -19,6 +21,11 @@ export component ModuleTile inherits Rectangle {
 
         width: parent.width - 2 * parent.padding;
         height: 4 * self.font-size;
+    }
 
+    ProgressBar {
+        width: parent.width * 0.66;
+        x: parent.padding;
+        y: (parent.height - self.height) * 0.8;
     }
 }

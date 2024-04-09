@@ -1,0 +1,14 @@
+import { ProgressValues } from "../structs/progress_values.slint";
+
+export component ProgressBar inherits Rectangle {
+    in property <ProgressValues> values;
+    height: self.width * 0.1;
+
+    public pure function total() -> int {
+        return self.values.correct + self.values.with-help + self.values.incorrect;
+    }
+
+    if self.total() == 0: Rectangle {
+        background: gray;
+    }
+}
