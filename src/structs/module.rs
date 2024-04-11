@@ -3,9 +3,9 @@ use std::collections::{HashMap, HashSet};
 use crate::io::io_module::IoModule;
 use super::sheet::Sheet;
 use super::attempt::UnsupportedAttemptStringError;
-slint::include_modules!();
+use crate::ProgressValues;
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Clone)]
 /// A university module like Basic Mathematics 1 or Electrical Engineering
 pub struct Module {
     pub sheets: HashMap<String, Sheet>,

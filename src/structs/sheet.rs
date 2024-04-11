@@ -4,7 +4,7 @@ use crate::io::io_sheet::IoSheet;
 
 use super::task::Task;
 use super::attempt::UnsupportedAttemptStringError;
-slint::include_modules!();
+use crate::ProgressValues;
 
 #[derive(Debug, PartialEq, Clone)]
 /// An exercise sheet (a single pdf file containing tasks)

@@ -2,7 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use super::attempt::{Attempt, UnsupportedAttemptStringError};
 use super::super::io::io_task::IoTask;
-slint::include_modules!();
+use crate::ProgressValues;
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Task {

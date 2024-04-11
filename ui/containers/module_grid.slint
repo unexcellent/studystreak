@@ -28,11 +28,6 @@ export component ModuleGrid inherits Rectangle {
             y: floor(index / root.col_count) * (root.tile_heigth + root.padding);
 
             module: module;
-
-            clicked => {
-                State.active-module = self.module.name;
-                State.active-page = "module";
-            }
         }
     }
 }
