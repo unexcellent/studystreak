@@ -20,7 +20,7 @@ impl Module {
     
         let mut topics = HashSet::new();
         for s in sheets.values() {
-            topics.extend(s.compile_topics());
+            topics.extend(s.topics());
         }
     
         Ok(Module {

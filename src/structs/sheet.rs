@@ -26,12 +26,12 @@ impl Sheet {
         } )
     }
 
-    pub fn compile_topics(&self) -> HashSet<String> {
+    pub fn topics(&self) -> HashSet<String> {
         let mut topics = HashSet::new();
 
         self.tasks
             .iter()
-            .for_each(|(_, t)| topics.extend(t.compile_topics()));
+            .for_each(|(_, t)| topics.extend(t.topics()));
 
         topics
     }
@@ -96,9 +96,9 @@ pub mod tests {
     }
 
     #[test]
-    fn test_compile_topics() {
+    fn test_topics() {
         assert_eq!(
-            Sheet::test_default1().compile_topics(),
+            Sheet::test_default1().topics(),
             HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
         );
     }

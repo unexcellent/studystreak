@@ -29,7 +29,7 @@ impl Task {
         })
     }
 
-    pub fn compile_topics(&self) -> HashSet<String> { // todo: rename to topics
+    pub fn topics(&self) -> HashSet<String> { // todo: rename to topics
         let mut topics = HashSet::new();
         if self.topic.is_some() {
             topics.insert(self.topic.as_ref().unwrap().clone());
@@ -37,7 +37,7 @@ impl Task {
 
         self.subtasks
             .iter()
-            .for_each(|(_, t)| topics.extend(t.compile_topics()));
+            .for_each(|(_, t)| topics.extend(t.topics()));
 
         topics
     }
@@ -129,13 +129,13 @@ pub mod tests {
     }
 
     #[test]
-    fn test_compile_topics() {
+    fn test_topics() {
         assert_eq!(
-            Task::test_default2().compile_topics(),
+            Task::test_default2().topics(),
             HashSet::from(["Tractors".to_owned()])
         );
         assert_eq!(
-            Task::test_default1().compile_topics(),
+            Task::test_default1().topics(),
             HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
         );
     }
