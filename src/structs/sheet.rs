@@ -78,6 +78,15 @@ pub mod tests {
 
     use super::*;
 
+    pub fn build_sheets_map(sheets: Vec<Sheet>) -> HashMap<String, Sheet> {
+        sheets.iter()
+            .enumerate()
+            .map(|(index, sheet)| {
+                (index.to_string(), sheet.clone())
+            })
+            .collect()
+    }
+
     #[test]
     fn test_parse() {
         assert_eq!(
