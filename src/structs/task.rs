@@ -111,6 +111,15 @@ pub mod test_defaults {
 pub mod tests {
     use super::*;
 
+    pub fn build_tasks_map(tasks: Vec<Task>) -> HashMap<String, Task> {
+        tasks.iter()
+            .enumerate()
+            .map(|(index, task)| {
+                (index.to_string(), task.clone())
+            })
+            .collect()
+    }
+
     #[test]
     fn test_parse() {
         assert_eq!(
@@ -188,25 +197,19 @@ pub mod tests {
     #[test]
     fn test_progress_subtasks() {
         let task = Task {
-            subtasks: HashMap::from([
-                (
-                    "a)".to_string(),
-                    Task {
-                        attempts: vec![
-                            Attempt::Correct,
-                        ],
-                        ..Task::test_default_empty()
-                    },
-                ),
-                (
-                    "b)".to_string(),
-                    Task {
-                        attempts: vec![
-                            Attempt::WithHelp,
-                        ],
-                        ..Task::test_default_empty()
-                    },
-                ),
+            subtasks: build_tasks_map(vec![
+                Task {
+                    attempts: vec![
+                        Attempt::Correct,
+                    ],
+                    ..Task::test_default_empty()
+                },
+                Task {
+                    attempts: vec![
+                        Attempt::WithHelp,
+                    ],
+                    ..Task::test_default_empty()
+                },
             ]),
             ..Task::test_default_empty()
         };
@@ -224,16 +227,13 @@ pub mod tests {
     #[test]
     fn test_progress_subtasks_and_attempts() {
         let task = Task {
-            subtasks: HashMap::from([
-                (
-                    "a)".to_string(),
-                    Task {
-                        attempts: vec![
-                            Attempt::Correct,
-                        ],
-                        ..Task::test_default_empty()
-                    },
-                )
+            subtasks: build_tasks_map(vec![
+                Task {
+                    attempts: vec![
+                        Attempt::Correct,
+                    ],
+                    ..Task::test_default_empty()
+                },
             ]),
             attempts: vec![
                 Attempt::Incorrect
