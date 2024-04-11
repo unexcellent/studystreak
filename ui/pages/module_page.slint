@@ -1,2 +1,13 @@
+import { State, Events } from "../global.slint";
+import { PageHeader } from "../components/page_header.slint";
+import { SheetList } from "../containers/sheet_list.slint";
 
-export component ModulePage inherits Rectangle {}
+export component ModulePage inherits Rectangle {
+    VerticalLayout {
+        PageHeader { text: State.active-module; }
+        
+        HorizontalLayout {
+            SheetList {}
+        }
+    }
+}

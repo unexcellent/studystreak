@@ -1,0 +1,35 @@
+import { SlintSheet } from "../structs/sheet.slint";
+import { ProgressBar } from "progressbar.slint";
+import { State, Events } from "../global.slint";
+
+export component SheetEntry inherits Rectangle {
+    in-out property <SlintSheet> sheet;
+
+    border-color: white;
+    border-width: 1px;
+
+    padding: 10px;
+
+    in-out property <length> progressbar_width: 150px;
+
+    HorizontalLayout {
+        alignment: center;
+
+        Text {
+            text: root.sheet.name;
+            color: white;
+            horizontal-alignment: left;
+            vertical-alignment: center;
+            font-family: "Menlo";
+            font-size: 15px;
+    
+            width: root.width - 2 * root.padding - root.progressbar_width;
+        }
+    
+        ProgressBar {
+            width: root.progressbar_width;
+            values: root.sheet.progress;
+            y: (parent.height - self.height) * 0.5;
+        }
+    }
+}

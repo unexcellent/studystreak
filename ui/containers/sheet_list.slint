@@ -1,0 +1,38 @@
+import { State, Events } from "../global.slint";
+import { ScrollView, VerticalBox } from "std-widgets.slint";
+import { SheetEntry } from "../components/sheet_entry.slint";
+
+export component SheetList inherits Rectangle {
+    padding: 10px;
+
+    VerticalLayout {
+        padding: parent.padding;
+
+        Text {
+            text: "Sheets";
+            color: white;
+            horizontal-alignment: left;
+            vertical-alignment: center;
+            font-family: "Menlo";
+            font-size: 20px;
+            x: parent.padding;
+    
+            height: 2 * self.font-size;
+        }
+    
+        ScrollView {
+            property <length> sheet_entry_height: 50px;
+
+            viewport-width: self.width;
+            viewport-height: (sheet_entry_height + parent.padding) * State.sheets.length;
+
+            for sheet[index] in State.sheets: SheetEntry {
+                height: parent.sheet_entry_height;
+        
+                y: (sheet_entry_height + root.padding) * index;
+    
+                sheet: sheet;
+            }
+        }
+    }
+}
