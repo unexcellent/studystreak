@@ -1,12 +1,12 @@
 import { Button, LineEdit } from "std-widgets.slint";
 
-import { State } from "../global.slint";
+import { State, Style } from "../global.slint";
 
 export component SearchBar inherits Rectangle {
     in-out property active-page <=> State.active-page;
 
     height: 50px;
-    padding: 15px;
+    padding: Style.padding.medium;
 
     Rectangle {
         y: parent.padding;

@@ -1,6 +1,7 @@
 import { SlintModule } from "./structs/module.slint";
 import { SlintSheet } from "./structs/sheet.slint";
 import { SlintTopic } from "./structs/topic.slint";
+import { Padding } from "./structs/style.slint";
 
 export global State {
     in-out property <string> active-page: "start";
@@ -13,4 +14,9 @@ export global State {
 
 export global Events {
     callback populate_module_page(string);
+}
+
+
+export global Style {
+    in-out property <Padding> padding: { large: 15px, medium: 10px, small: 5px };
 }

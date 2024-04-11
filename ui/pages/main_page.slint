@@ -1,4 +1,4 @@
-import { State } from "../global.slint";
+import { State, Style } from "../global.slint";
 import { StartPage } from "start_page.slint";
 import { ModulePage } from "module_page.slint";
 
@@ -15,7 +15,7 @@ export component MainPage inherits Rectangle {
     }
 
     HorizontalLayout {
-        padding: 5px;
+        padding: Style.padding.medium;
         if State.active-page == "start": StartPage {}
         if State.active-page == "module": ModulePage {}
     }

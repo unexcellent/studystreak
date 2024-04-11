@@ -1,6 +1,6 @@
 import { SlintSheet } from "../structs/sheet.slint";
 import { ProgressBar } from "progressbar.slint";
-import { State, Events } from "../global.slint";
+import { State, Events, Style } from "../global.slint";
 
 export component SheetEntry inherits Rectangle {
     in-out property <SlintSheet> sheet;
@@ -8,7 +8,7 @@ export component SheetEntry inherits Rectangle {
     border-color: white;
     border-width: 1px;
 
-    padding: 10px;
+    padding: Style.padding.medium;
 
     in-out property <length> progressbar_width: 150px;
 
