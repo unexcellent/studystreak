@@ -2,6 +2,7 @@ use std::collections::{HashMap, HashSet};
 
 use super::attempt::{Attempt, UnsupportedAttemptStringError};
 use super::super::io::io_task::IoTask;
+slint::include_modules!();
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Task {
@@ -27,7 +28,8 @@ impl Task {
             subtasks
         })
     }
-    pub fn compile_topics(&self) -> HashSet<String> {
+
+    pub fn compile_topics(&self) -> HashSet<String> { // todo: rename to topics
         let mut topics = HashSet::new();
         if self.topic.is_some() {
             topics.insert(self.topic.as_ref().unwrap().clone());
@@ -38,6 +40,42 @@ impl Task {
             .for_each(|(_, t)| topics.extend(t.compile_topics()));
 
         topics
+    }
+
+    pub fn progress(&self) -> ProgressValues {
+        let mut progress = ProgressValues {
+            correct: 0,
+            incorrect: 0,
+            with_help: 0,  
+        };
+
+        if self.subtasks.is_empty() {
+            self.attempts.iter()
+                .for_each(|attempt| {
+                    match attempt {
+                        Attempt::Correct => progress.correct += 1,
+                        Attempt::Incorrect => progress.incorrect += 1,
+                        Attempt::WithHelp => progress.with_help += 1,
+                        Attempt::Skipped => {},
+                        Attempt::PartiallyCorrect(correct, incorrect) => {
+                            progress.correct += *correct as i32;
+                            progress.incorrect += *incorrect as i32;
+                        }
+                    }
+                });
+        } else {
+            self.subtasks
+                .values().into_iter()
+                .for_each(|subtask| {
+                    let subtask_progress = subtask.progress();
+
+                    progress.correct += subtask_progress.correct;
+                    progress.with_help += subtask_progress.with_help;
+                    progress.incorrect += subtask_progress.incorrect;
+                });
+        }
+
+        progress
     }
 }
 
@@ -56,6 +94,13 @@ pub mod test_defaults {
             Task {
                 topic: Some("Tractors".to_owned()),
                 attempts: vec![Attempt::PartiallyCorrect(9, 11)],
+                subtasks: HashMap::new()
+            }
+        }
+        pub fn test_default_empty() -> Task {
+            Task {
+                topic: None,
+                attempts: Vec::new(),
                 subtasks: HashMap::new()
             }
         }
@@ -85,4 +130,125 @@ pub mod tests {
             HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
         );
     }
+
+    #[test]
+    fn test_progress_single_task() {
+        assert_eq!(
+            Task {
+                attempts: vec![
+                    Attempt::Correct,
+                    Attempt::Correct,
+                    Attempt::WithHelp,
+                    Attempt::Incorrect,
+                ],
+                ..Task::test_default_empty()
+            }.progress(),
+            ProgressValues {
+                correct: 2,
+                with_help: 1,
+                incorrect: 1
+            }
+        )
+    }
+
+    #[test]
+    fn test_progress_single_task_skipped() {
+        assert_eq!(
+            Task {
+                attempts: vec![
+                    Attempt::Skipped
+                ],
+                ..Task::test_default_empty()
+            }.progress(),
+            ProgressValues {
+                correct: 0,
+                with_help: 0,
+                incorrect: 0
+            }
+        )
+    }
+
+    #[test]
+    fn test_progress_single_task_partially_correct() {
+        assert_eq!(
+            Task {
+                attempts: vec![
+                    Attempt::PartiallyCorrect(5, 3)
+                ],
+                ..Task::test_default_empty()
+            }.progress(),
+            ProgressValues {
+                correct: 5,
+                with_help: 0,
+                incorrect: 3
+            }
+        )
+    }
+
+    #[test]
+    fn test_progress_subtasks() {
+        let task = Task {
+            subtasks: HashMap::from([
+                (
+                    "a)".to_string(),
+                    Task {
+                        attempts: vec![
+                            Attempt::Correct,
+                        ],
+                        ..Task::test_default_empty()
+                    },
+                ),
+                (
+                    "b)".to_string(),
+                    Task {
+                        attempts: vec![
+                            Attempt::WithHelp,
+                        ],
+                        ..Task::test_default_empty()
+                    },
+                ),
+            ]),
+            ..Task::test_default_empty()
+        };
+
+        assert_eq!(
+            task.progress(),
+            ProgressValues {
+                correct: 1,
+                with_help: 1,
+                incorrect: 0
+            }
+        )
+    }
+
+    #[test]
+    fn test_progress_subtasks_and_attempts() {
+        let task = Task {
+            subtasks: HashMap::from([
+                (
+                    "a)".to_string(),
+                    Task {
+                        attempts: vec![
+                            Attempt::Correct,
+                        ],
+                        ..Task::test_default_empty()
+                    },
+                )
+            ]),
+            attempts: vec![
+                Attempt::Incorrect
+            ],
+            ..Task::test_default_empty()
+        };
+
+        assert_eq!(
+            task.progress(),
+            ProgressValues {
+                correct: 1,
+                with_help: 0,
+                incorrect: 0
+            }
+        )
+    }
+
 }
