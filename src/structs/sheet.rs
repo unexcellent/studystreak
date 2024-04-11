@@ -4,7 +4,7 @@ use crate::io::io_sheet::IoSheet;
 
 use super::task::Task;
 use super::attempt::UnsupportedAttemptStringError;
-
+slint::include_modules!();
 
 #[derive(Debug, PartialEq, Clone)]
 /// An exercise sheet (a single pdf file containing tasks)
@@ -25,6 +25,7 @@ impl Sheet {
             tasks,
         } )
     }
+
     pub fn compile_topics(&self) -> HashSet<String> {
         let mut topics = HashSet::new();
 
@@ -33,6 +34,25 @@ impl Sheet {
             .for_each(|(_, t)| topics.extend(t.compile_topics()));
 
         topics
+    }
+
+    pub fn progress(&self) -> ProgressValues {
+        let mut progress = ProgressValues {
+            correct: 0,
+            incorrect: 0,
+            with_help: 0,  
+        };
+
+        self.tasks.iter()
+            .for_each(|(_, task)| {
+                let task_progress = task.progress();
+
+                progress.correct += task_progress.correct;
+                progress.with_help += task_progress.with_help;
+                progress.incorrect += task_progress.incorrect;
+            });
+
+        progress
     }
 }
 
@@ -52,7 +72,9 @@ pub mod test_defaults {
 
 #[cfg(test)]
 pub mod tests {
-    use std::collections::HashSet;
+    use std::{collections::HashSet, vec};
+
+    use crate::structs::{attempt::Attempt, task::tests::build_tasks_map};
 
     use super::*;
 
@@ -70,5 +92,35 @@ pub mod tests {
             Sheet::test_default1().compile_topics(),
             HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
         );
+    }
+
+    #[test]
+    fn test_progress() {
+        let sheet = Sheet {
+            tasks: build_tasks_map(vec![
+                Task {
+                    attempts: vec![
+                        Attempt::Correct
+                    ],
+                    ..Task::test_default_empty()
+                },
+                Task {
+                    attempts: vec![
+                        Attempt::Incorrect
+                    ],
+                    ..Task::test_default_empty()
+                },
+            ]),
+            ..Sheet::test_default1()
+        };
+
+        assert_eq!(
+            sheet.progress(),
+            ProgressValues {
+                correct: 1,
+                with_help: 0,
+                incorrect: 1,
+            }
+        )
     }
 }
