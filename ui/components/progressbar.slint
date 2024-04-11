@@ -1,7 +1,8 @@
 import { ProgressValues } from "../structs/progress_values.slint";
+import { State, Style } from "../global.slint";
 
 component EmptyBar inherits Rectangle {
-    background: gray;
+    background: Style.color.secondary;
 }
 
 component PopulatedBar inherits Rectangle {

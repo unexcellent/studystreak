@@ -5,7 +5,7 @@ import { State, Events, Style } from "../global.slint";
 export component SheetEntry inherits Rectangle {
     in-out property <SlintSheet> sheet;
 
-    border-color: white;
+    border-color: Style.color.primary;
     border-width: 1px;
 
     padding: Style.padding.medium;
@@ -17,7 +17,7 @@ export component SheetEntry inherits Rectangle {
 
         Text {
             text: root.sheet.name;
-            color: white;
+            color: Style.color.primary;
             horizontal-alignment: left;
             vertical-alignment: center;
             font-family: "Menlo";

@@ -1,5 +1,4 @@
 import { Button, LineEdit } from "std-widgets.slint";
-
 import { State, Style } from "../global.slint";
 
 export component SearchBar inherits Rectangle {
@@ -15,13 +14,13 @@ export component SearchBar inherits Rectangle {
         x: (parent.width - parent.padding) * 0.66;
         width: parent.width - self.x - parent.padding;
 
-        border-color: white;
+        border-color: Style.color.primary;
         border-width: 1px;
 
         Text {
             x: 5px;
             text: "Search";
-            color: gray;
+            color: Style.color.secondary;
             font-family: "Menlo";
             horizontal-alignment: left;
             vertical-alignment: center;

@@ -1,6 +1,6 @@
 import { Button, VerticalBox, HorizontalBox } from "std-widgets.slint";
 
-import { State, Events } from "./global.slint";
+import { State, Events, Style } from "./global.slint";
 import { SearchBar } from "./containers/search_bar.slint";
 import { MainPage } from "./pages/main_page.slint";
 
@@ -10,7 +10,7 @@ export component AppWindow inherits Window {
     min_height: 400px;
     min_width: 600px;
     Rectangle {
-        background: black;
+        background: Style.color.background;
 
         VerticalBox {
             spacing: 0;

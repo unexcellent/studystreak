@@ -12,14 +12,14 @@ export component ModuleTile inherits Rectangle {
         State.active-page = "module";
     }
 
-    border-color: white;
+    border-color: Style.color.primary;
     border-width: 1px;
 
     padding: Style.padding.medium;
 
     Text {
         text: module.name;
-        color: white;
+        color: Style.color.primary;
         horizontal-alignment: left;
         vertical-alignment: top;
         font-family: "Menlo";
