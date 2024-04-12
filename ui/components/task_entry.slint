@@ -14,20 +14,14 @@ export component TaskEntry inherits Rectangle {
         LineEdit {
             text: Callbacks.indent_based_on_depth(task.name, task.depth);
 
-            // font-family: "Menlo";
-            // color: Style.color.primary;
             horizontal-alignment: left;
-            // vertical-alignment: center;
             font-size: 20px;
             width: root.task_column_width;
         }
         LineEdit {
             text: task.topic;
 
-            // font-family: "Menlo";
-            // color: Style.color.primary;
             horizontal-alignment: left;
-            // vertical-alignment: center;
             font-size: 20px;
             width: root.topic_column_width;
         }
