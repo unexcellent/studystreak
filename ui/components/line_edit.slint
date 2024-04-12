@@ -1,18 +1,18 @@
 import { Callbacks, Style } from "../global.slint";
 
-component LineEditBase inherits Rectangle {
+export component LineEdit inherits Rectangle {
     in-out property <string> placeholder-text;
     in-out property <length> font-size <=> i-text-input.font-size;
     in property <string> font-family: "Menlo";
     in-out property <string> text <=> i-text-input.text;
-    in-out property <brush> placeholder-color;
+    in-out property <brush> placeholder-color: Style.color.secondary;
     in-out property <bool> enabled <=> i-text-input.enabled;
     in-out property <bool> has-focus: i-text-input.has-focus;
     in-out property <InputType> input-type <=> i-text-input.input-type;
     in-out property <TextHorizontalAlignment> horizontal-alignment <=> i-text-input.horizontal-alignment;
     in-out property <bool> read-only <=> i-text-input.read-only;
     in property <int> font-weight <=> i-text-input.font-weight;
-    in property <brush> text-color;
+    in property <brush> text-color: Style.color.primary;
     in property <color> selection-background-color <=> i-text-input.selection-background-color;
     in property <color> selection-foreground-color <=> i-text-input.selection-foreground-color;
     in property <length> margin;
@@ -84,80 +84,5 @@ component LineEditBase inherits Rectangle {
         accepted => { root.accepted(self.text); }
 
         edited => { root.edited(self.text); }
-    }
-}
-
-component NativeLineEdit {
-    out property <length> native-padding-left;
-    out property <length> native-padding-right;
-    out property <length> native-padding-top;
-    out property <length> native-padding-bottom;
-    in property <bool> has-focus;
-    in property <bool> enabled: true;
-    //-is_internal
-}
-
-export component LineEdit {
-    in property <length> font-size <=> inner.font-size;
-    in property <string> placeholder-text <=> inner.placeholder-text;
-    in property input-type <=> inner.input-type;
-    in property horizontal-alignment <=> inner.horizontal-alignment;
-    in property read-only <=> inner.read-only;
-    in property <bool> enabled: true;
-    out property <bool> has-focus <=> inner.has-focus;
-    in-out property <string> text <=> inner.text;
-
-    callback accepted <=> inner.accepted;
-    callback edited <=> inner.edited;
-
-    public function set-selection-offsets(start: int, end: int) {
-        inner.set-selection-offsets(start, end);
-    }
-
-    public function select-all() {
-        inner.select-all();
-    }
-
-    public function clear-selection() {
-        inner.clear-selection();
-    }
-
-    public function cut() {
-        inner.cut();
-    }
-
-    public function copy() {
-        inner.copy();
-    }
-
-    public function paste() {
-        inner.paste();
-    }
-
-    forward-focus: inner;
-    horizontal-stretch: 1;
-    vertical-stretch: 0;
-    min-width: max(160px, layout.min-height);
-    min-height: max(32px, layout.min-height);
-
-    native := NativeLineEdit {
-        has-focus <=> root.has-focus;
-        enabled: root.enabled;
-        width: 100%;
-        height: 100%;
-    }
-
-    layout := HorizontalLayout {
-        padding-left: native.native-padding-left;
-        padding-right: native.native-padding-right;
-        padding-top: native.native-padding-top;
-        padding-bottom: native.native-padding-bottom;
-
-        inner := LineEditBase {
-            placeholder-color: Style.color.secondary;
-            text-color: Style.color.primary;
-            enabled: root.enabled;
-            margin: layout.padding-left + layout.padding-right;
-        }
     }
 }
