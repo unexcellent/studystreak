@@ -27,7 +27,7 @@ export component ModuleGrid inherits Rectangle {
             x: mod(index, root.col_count) * (root.tile_width + root.padding);
             y: floor(index / root.col_count) * (root.tile_heigth + root.padding);
 
-            module: module;
+            module-index: index;
         }
     }
 }

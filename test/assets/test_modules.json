@@ -1,7 +1,8 @@
 {
     "schema_version": "1.0.0",
-    "modules": {
-        "math1": {
+    "modules": [
+        {
+            "name": "math1",
             "sheets": {
                 "e01": {
                     "tasks_path": "/path/to/tasks.pdf",
@@ -29,8 +30,9 @@
                 }
             }
         },
-        "mech1": {
+        {
+            "name": "mech1",
             "sheets": {}
         }
-    }
+    ]
 }

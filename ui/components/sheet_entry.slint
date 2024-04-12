@@ -8,7 +8,7 @@ export component SheetEntry inherits Rectangle {
 
     clicked => {
         Callbacks.populate_sheet_page(
-            State.active-module,
+            State.active-module-index,
             self.sheet.name,
         );
         State.active-sheet = self.sheet.name;

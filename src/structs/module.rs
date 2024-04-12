@@ -8,6 +8,7 @@ use crate::ProgressValues;
 #[derive(Debug, PartialEq, Clone)]
 /// A university module like Basic Mathematics 1 or Electrical Engineering
 pub struct Module {
+    pub name: String,
     pub sheets: HashMap<String, Sheet>,
     pub topics: HashSet<String>,
 }
@@ -25,6 +26,7 @@ impl From<&IoModule> for Module {
         }
 
         Module {
+            name: io_module.name.to_string(),
             sheets: <HashMap<String, IoSheet> as Clone>::clone(&io_module.sheets).into_iter()
                 .map(|(name, sheet)| (name.to_string(), Sheet::from(&sheet)))
                 .collect(),
@@ -59,6 +61,7 @@ pub mod test_defaults {
     impl Module {
         pub fn test_default1() -> Module {
             Module {
+                name: "Basic Maths 1".to_string(),
                 sheets: HashMap::from([("e01".to_owned(), Sheet::test_default1())]),
                 topics: HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()]),
             }

@@ -3,12 +3,12 @@ import { ProgressBar } from "progressbar.slint";
 import { State, Callbacks, Style } from "../global.slint";
 
 export component ModuleTile inherits Rectangle {
-    in-out property <SlintModule> module;
+    in-out property <int> module-index;
     callback clicked();
 
     clicked => {
-        Callbacks.populate_module_page(self.module.name);
-        State.active-module = self.module.name;
+        Callbacks.populate_module_page(module-index);
+        State.active-module-index = module-index;
         State.active-page = "module";
     }
 
@@ -18,7 +18,7 @@ export component ModuleTile inherits Rectangle {
     padding: Style.padding.medium;
 
     Text {
-        text: module.name;
+        text: State.modules[root.module-index].name;
         color: Style.color.primary;
         horizontal-alignment: left;
         vertical-alignment: top;
@@ -36,7 +36,7 @@ export component ModuleTile inherits Rectangle {
         width: parent.width * 0.66;
         x: parent.padding;
         y: (parent.height - self.height) * 0.8;
-        values: parent.module.progress;
+        values: State.modules[root.module-index].progress;
     }
 
     TouchArea {

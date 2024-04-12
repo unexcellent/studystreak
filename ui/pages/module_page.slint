@@ -4,7 +4,7 @@ import { SheetList } from "../containers/sheet_list.slint";
 
 export component ModulePage inherits Rectangle {
     VerticalLayout {
-        PageHeader { text: State.active-module; }
+        PageHeader { text: State.modules[State.active-module-index].name; }
         
         HorizontalLayout {
             SheetList {}
