@@ -7,9 +7,9 @@ use crate::io::read_modules::read_modules;
 /// If not, it is created and the return value will be empty.
 pub fn init_io(io_path: &PathBuf) -> HashMap<String, Module> {
     if io_path.exists() {
-        return read_modules(&io_path);
+        read_modules(io_path)
     } else {
         // todo: create file
-        return HashMap::new()
+        HashMap::new()
     }
 }

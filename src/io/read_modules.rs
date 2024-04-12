@@ -3,7 +3,7 @@ use std::{collections::HashMap, path::PathBuf};
 use crate::{io::io_root::IoRoot, structs::module::Module};
 
 pub fn read_modules(path: &PathBuf) -> HashMap<String, Module> {
-    let raw_yaml_content = IoRoot::from(&path);
+    let raw_yaml_content = IoRoot::from(path);
 
     let mut modules = HashMap::new();
     raw_yaml_content.modules.iter()

@@ -65,12 +65,12 @@ fn main() -> Result<(), slint::PlatformError> {
         let mut indented_string = String::new();
 
         for i in 0..depth {
-            indented_string.push_str(" ");
+            indented_string.push(' ');
         }
 
-        indented_string.push_str(&string.to_string());
+        indented_string.push_str(string.as_ref());
 
-        return SharedString::from(indented_string);
+        SharedString::from(indented_string)
     });
 
     populate_start_page(&modules, &ui);

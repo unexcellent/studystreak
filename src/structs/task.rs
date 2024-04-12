@@ -1,4 +1,4 @@
-use std::borrow::BorrowMut;
+
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
@@ -114,7 +114,7 @@ impl Task {
                 });
         } else {
             self.subtasks
-                .values().into_iter()
+                .values()
                 .for_each(|subtask| {
                     let subtask_progress = subtask.progress();
 
