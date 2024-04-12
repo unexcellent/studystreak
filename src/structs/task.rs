@@ -4,7 +4,7 @@ use std::rc::Rc;
 use slint::{ModelRc, SharedString, VecModel};
 
 use super::super::io::io_task::IoTask;
-use super::attempt::{Attempt, UnsupportedAttemptStringError};
+use super::attempt::Attempt;
 use crate::{ProgressValues, SlintTask};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -15,23 +15,23 @@ pub struct Task {
     pub position: u32,
 }
 impl Task {
-    pub fn parse(io_task: &IoTask) -> Result<Task, UnsupportedAttemptStringError> {
+    pub fn parse(io_task: &IoTask) -> Task {
         let mut attempts = Vec::new();
-        for s in &io_task.attempts {
-            attempts.push(Attempt::parse(s)?);
+        for attempt_str in &io_task.attempts {
+            match Attempt::parse(&attempt_str) {
+                Ok(attempt) => {attempts.push(attempt);},
+                Err(_) => {continue;}
+            }
         }
 
-        let mut subtasks = HashMap::new();
-        for (k, v) in &io_task.subtasks {
-            subtasks.insert(k.to_owned(), Task::parse(v)?);
-        }
-
-        Ok(Task {
+        Task {
             topic: io_task.topic.clone(),
             attempts,
-            subtasks,
+            subtasks: io_task.subtasks.iter()
+                .map(|(id, subtask)| (id.to_string(), Task::parse(subtask)))
+                .collect(),
             position: io_task.position,
-        })
+        }
     }
 
     pub fn to_slint(&self, name: String, depth: u8) -> Vec<SlintTask> {
@@ -181,7 +181,7 @@ pub mod tests {
     #[test]
     fn test_parse() {
         assert_eq!(
-            Task::parse(&IoTask::test_default1()).unwrap(),
+            Task::parse(&IoTask::test_default1()),
             Task::test_default1()
         )
     }
