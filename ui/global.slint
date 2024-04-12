@@ -15,7 +15,7 @@ export global State {
     in-out property <[SlintTask]> tasks; // tasks displayed on the last loaded sheet page
 }
 
-export global Events {
+export global Callbacks {
     callback populate_module_page(string);
     callback populate_sheet_page(string, string);
     pure callback indent_based_on_depth(string, int) -> string;

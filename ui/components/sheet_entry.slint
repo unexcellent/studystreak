@@ -1,13 +1,13 @@
 import { SlintSheet } from "../structs/sheet.slint";
 import { ProgressBar } from "progressbar.slint";
-import { State, Events, Style } from "../global.slint";
+import { State, Callbacks, Style } from "../global.slint";
 
 export component SheetEntry inherits Rectangle {
     in-out property <SlintSheet> sheet;
     callback clicked();
 
     clicked => {
-        Events.populate_sheet_page(
+        Callbacks.populate_sheet_page(
             State.active-module,
             self.sheet.name,
         );

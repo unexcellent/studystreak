@@ -19,7 +19,7 @@ fn main() -> Result<(), slint::PlatformError> {
     let io_path = PathBuf::from(format!("{}/.studystreak.json5", std::env!("HOME")));
     let mut modules = io::init_io::init_io(&io_path);
 
-    ui.global::<Events>().on_populate_module_page({
+    ui.global::<Callbacks>().on_populate_module_page({
         let ui_weak = ui.as_weak().unwrap();
         let module_data = modules.clone();
 
@@ -40,7 +40,7 @@ fn main() -> Result<(), slint::PlatformError> {
         }
     });
 
-    ui.global::<Events>().on_populate_sheet_page({
+    ui.global::<Callbacks>().on_populate_sheet_page({
         let ui_weak = ui.as_weak().unwrap();
         let module_data = modules.clone();
 
@@ -61,7 +61,7 @@ fn main() -> Result<(), slint::PlatformError> {
         }
     });
 
-    ui.global::<Events>().on_indent_based_on_depth(|string, depth| {
+    ui.global::<Callbacks>().on_indent_based_on_depth(|string, depth| {
         let mut indented_string = String::new();
 
         for i in 0..depth {

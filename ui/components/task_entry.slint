@@ -1,5 +1,5 @@
 import { SlintTask } from "../structs/task.slint";
-import { State, Events, Style } from "../global.slint";
+import { State, Callbacks, Style } from "../global.slint";
 
 export component TaskEntry inherits Rectangle {
     in-out property <SlintTask> task;
@@ -11,7 +11,7 @@ export component TaskEntry inherits Rectangle {
 
     HorizontalLayout {
         TextInput {
-            text: Events.indent_based_on_depth(task.name, task.depth);
+            text: Callbacks.indent_based_on_depth(task.name, task.depth);
 
             font-family: "Menlo";
             color: Style.color.primary;

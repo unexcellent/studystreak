@@ -1,13 +1,13 @@
 import { SlintModule } from "../structs/module.slint";
 import { ProgressBar } from "progressbar.slint";
-import { State, Events, Style } from "../global.slint";
+import { State, Callbacks, Style } from "../global.slint";
 
 export component ModuleTile inherits Rectangle {
     in-out property <SlintModule> module;
     callback clicked();
 
     clicked => {
-        Events.populate_module_page(self.module.name);
+        Callbacks.populate_module_page(self.module.name);
         State.active-module = self.module.name;
         State.active-page = "module";
     }
