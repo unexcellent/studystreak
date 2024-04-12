@@ -1,12 +1,12 @@
 #![allow(dead_code, unused_variables, unused_mut, unused_assignments)] // TODO: remove
 
-use std::{os::unix::process, path::PathBuf, rc::Rc};
+use std::{path::PathBuf, rc::Rc};
 slint::include_modules!();
 
 #[path = "structs/mod.rs"]
 mod structs;
 use slint::{ModelRc, SharedString, VecModel};
-use structs::module::{self, Module};
+use structs::module::Module;
 
 #[path = "io/mod.rs"]
 mod io;
