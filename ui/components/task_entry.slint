@@ -1,0 +1,34 @@
+import { SlintTask } from "../structs/task.slint";
+import { State, Events, Style } from "../global.slint";
+
+export component TaskEntry inherits Rectangle {
+    in-out property <SlintTask> task;
+
+    in property <percent> task_column_width;
+    in property <percent> topic_column_width;
+    in property <percent> attempts_column_width;
+    in property <percent> options_column_width;
+
+    HorizontalLayout {
+        TextInput {
+            text: Events.indent_based_on_depth(task.name, task.depth);
+
+            font-family: "Menlo";
+            color: Style.color.primary;
+            horizontal-alignment: left;
+            vertical-alignment: center;
+            font-size: 20px;
+            width: root.task_column_width;
+        }
+        TextInput {
+            text: task.topic;
+
+            font-family: "Menlo";
+            color: Style.color.primary;
+            horizontal-alignment: left;
+            vertical-alignment: center;
+            font-size: 20px;
+            width: root.topic_column_width;
+        }
+    }
+}

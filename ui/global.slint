@@ -18,6 +18,7 @@ export global State {
 export global Events {
     callback populate_module_page(string);
     callback populate_sheet_page(string, string);
+    pure callback indent_based_on_depth(string, int) -> string;
 }
 
 export global Style {

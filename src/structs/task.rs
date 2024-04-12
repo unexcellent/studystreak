@@ -32,16 +32,40 @@ impl Task {
         })
     }
 
-    pub fn to_slint(&self, name: String) -> SlintTask {
-        SlintTask {
-            name: SharedString::from(name),
-            topic: match &self.topic {
-                Some(t) => SharedString::from(t),
-                None => SharedString::from("")
-            },
-            attempts: Task::attempts_to_slint(&self.attempts),
-            subtasks: ModelRc::from(Rc::new(VecModel::default()))
+    pub fn to_slint(&self, name: String, depth: u8) -> Vec<SlintTask> {
+        let mut slint_tasks = Vec::new();
+
+        if self.subtasks.is_empty() {
+            slint_tasks.push(
+                SlintTask {
+                    name: SharedString::from(&name.to_string()),
+                    topic: match &self.topic {
+                        Some(t) => SharedString::from(t),
+                        None => SharedString::from("")
+                    },
+                    attempts: Task::attempts_to_slint(&self.attempts),
+                    depth: depth as i32,
+                }
+            );
+        } else {
+            slint_tasks.push(
+                SlintTask {
+                    name: SharedString::from(&name.to_string()),
+                    topic: match &self.topic {
+                        Some(t) => SharedString::from(t),
+                        None => SharedString::from("")
+                    },
+                    attempts: ModelRc::from(Rc::new(VecModel::default())),
+                    depth: depth as i32,
+                }
+            );
+
+            for (subtask_name, subtask) in &self.subtasks {
+                slint_tasks.extend(subtask.to_slint(subtask_name.to_string(), depth + 1));
+            }
         }
+
+        slint_tasks
     }
 
     fn attempts_to_slint(attempts: &Vec<Attempt>) -> ModelRc<SharedString> {

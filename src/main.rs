@@ -54,11 +54,23 @@ fn main() -> Result<(), slint::PlatformError> {
                 .get(&sheet_id.to_string()).unwrap();
 
             for (task_name, task) in &sheet.tasks {
-                slint_tasks.push(task.to_slint(task_name.to_string()));
+                slint_tasks.extend(task.to_slint(task_name.to_string(), 0));
             }
 
             ui_weak.global::<State>().set_tasks(ModelRc::from(slint_tasks));
         }
+    });
+
+    ui.global::<Events>().on_indent_based_on_depth(|string, depth| {
+        let mut indented_string = String::new();
+
+        for i in 0..depth {
+            indented_string.push_str("  ");
+        }
+
+        indented_string.push_str(&string.to_string());
+
+        return SharedString::from(indented_string);
     });
 
     populate_start_page(&modules, &ui);

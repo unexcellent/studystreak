@@ -1,8 +1,69 @@
-import { State, Events } from "../global.slint";
+import { State, Events, Style } from "../global.slint";
 import { PageHeader } from "../components/page_header.slint";
+import { ScrollView } from "std-widgets.slint";
+import { TaskEntry } from "../components/task_entry.slint";
+import { SlintTask } from "../structs/task.slint";
 
 export component SheetPage inherits Rectangle {
+    property <percent> task_column_width: 20%;
+    property <percent> topic_column_width: 30%;
+    property <percent> attempts_column_width: 40%;
+    property <percent> options_column_width: 10%;
+
+    property <length> task_entry_height: 30px;
+
     VerticalLayout {
         PageHeader { text: State.active-sheet; }
+
+        HorizontalLayout {
+            height: 40px;
+
+            Text {
+                text: "Task";
+
+                font-family: "Menlo";
+                color: Style.color.primary;
+                horizontal-alignment: left;
+                vertical-alignment: center;
+                font-size: 25px;
+                width: root.task_column_width;
+            }
+            Text {
+                text: "Topic";
+
+                font-family: "Menlo";
+                color: Style.color.primary;
+                horizontal-alignment: left;
+                vertical-alignment: center;
+                font-size: 25px;
+                width: root.topic_column_width;
+            }
+            Text {
+                text: "Attempts";
+
+                font-family: "Menlo";
+                color: Style.color.primary;
+                horizontal-alignment: left;
+                vertical-alignment: center;
+                font-size: 25px;
+            }
+            Rectangle { width: root.options_column_width; }
+        }
+
+        ScrollView {
+            viewport-height: (root.task_entry_height + Style.padding.small) * State.tasks.length;
+
+            for task[index] in State.tasks: TaskEntry {
+                task: task;
+
+                task_column_width: root.task_column_width;
+                topic_column_width: root.topic_column_width;
+                attempts_column_width: root.attempts_column_width;
+                options_column_width: root.options_column_width;
+
+                height: root.task_entry_height;
+                y: (root.task_entry_height + Style.padding.small) * index;
+            }
+        }
     }
 }
