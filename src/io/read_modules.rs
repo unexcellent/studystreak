@@ -10,7 +10,7 @@ pub fn read_modules(path: &PathBuf) -> HashMap<String, Module> {
         .modules
         .iter()
         .for_each(|(name, io_module)| {
-            modules.insert(name.to_owned(), Module::parse(io_module));
+            modules.insert(name.to_owned(), Module::from(io_module));
         });
 
     modules

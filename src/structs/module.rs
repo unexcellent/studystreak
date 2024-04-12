@@ -11,8 +11,9 @@ pub struct Module {
     pub sheets: HashMap<String, Sheet>,
     pub topics: HashSet<String>,
 }
-impl Module {
-    pub fn parse(io_module: &IoModule) -> Self {
+
+impl From<&IoModule> for Module {
+    fn from(io_module: &IoModule) -> Self {
         let mut sheets = HashMap::new();
         for (k, v) in &io_module.sheets {
             sheets.insert(k.to_owned(), Sheet::from(v));
@@ -30,7 +31,9 @@ impl Module {
             topics: topics.iter().map(|t| t.to_string()).collect(),
         }
     }
+}
 
+impl Module {
     pub fn progress(&self) -> ProgressValues {
         let mut progress = ProgressValues {
             correct: 0,
@@ -76,7 +79,7 @@ pub mod tests {
     #[test]
     fn test_parse() {
         assert_eq!(
-            Module::parse(&IoModule::test_default1()),
+            Module::from(&IoModule::test_default1()),
             Module::test_default1()
         )
     }
