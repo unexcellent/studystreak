@@ -71,7 +71,7 @@ pub mod test_defaults {
 pub mod tests {
     use crate::structs::{
         attempt::Attempt,
-        task::{tests::build_tasks_map, Task},
+        task::Task,
     };
 
     use super::*;
@@ -89,17 +89,17 @@ pub mod tests {
         let module = Module {
             sheets: vec![
                 Sheet {
-                    tasks: build_tasks_map(vec![Task {
+                    tasks: vec![Task {
                         attempts: vec![Attempt::Correct],
                         ..Task::test_default_empty()
-                    }]),
+                    }],
                     ..Sheet::test_default1()
                 },
                 Sheet {
-                    tasks: build_tasks_map(vec![Task {
+                    tasks: vec![Task {
                         attempts: vec![Attempt::Incorrect],
                         ..Task::test_default_empty()
-                    }]),
+                    }],
                     ..Sheet::test_default1()
                 },
             ],

@@ -1,9 +1,9 @@
 use std::{
-    collections::{HashMap, HashSet},
+    collections::HashSet,
     path::PathBuf,
 };
 
-use crate::io::{io_sheet::IoSheet, io_task::IoTask};
+use crate::io::io_sheet::IoSheet;
 use super::task::Task;
 use crate::ProgressValues;
 
@@ -13,7 +13,7 @@ pub struct Sheet {
     pub name: String,
     pub tasks_path: PathBuf,
     pub solutions_path: Option<PathBuf>,
-    pub tasks: HashMap<String, Task>,
+    pub tasks: Vec<Task>,
 }
 
 impl From<&IoSheet> for Sheet {
@@ -24,8 +24,8 @@ impl From<&IoSheet> for Sheet {
             solutions_path: io_sheet
                 .solutions_path.as_ref()
                 .map(|path| PathBuf::from(&path)),
-            tasks: <HashMap<String, IoTask> as Clone>::clone(&io_sheet.tasks).into_iter()
-                .map(|(name, task)| (name.to_string(), Task::from(&task)))
+            tasks: io_sheet.tasks.iter()
+                .map(|io_task| Task::from(io_task))
                 .collect(),
         }
     }
@@ -37,7 +37,7 @@ impl Sheet {
 
         self.tasks
             .iter()
-            .for_each(|(_, t)| topics.extend(t.topics()));
+            .for_each(|task| topics.extend(task.topics()));
 
         topics
     }
@@ -49,7 +49,7 @@ impl Sheet {
             with_help: 0,
         };
 
-        self.tasks.iter().for_each(|(_, task)| {
+        self.tasks.iter().for_each(|task| {
             let task_progress = task.progress();
 
             progress.correct += task_progress.correct;
@@ -70,7 +70,7 @@ pub mod test_defaults {
                 name: "e01".to_string(),
                 tasks_path: PathBuf::from("/path/to/tasks.pdf"),
                 solutions_path: Some(PathBuf::from("/path/to/solutions.pdf")),
-                tasks: HashMap::from([("1.".to_owned(), Task::test_default1())]),
+                tasks: vec![Task::test_default1()],
             }
         }
     }
@@ -80,17 +80,9 @@ pub mod test_defaults {
 pub mod tests {
     use std::{collections::HashSet, vec};
 
-    use crate::structs::{attempt::Attempt, task::tests::build_tasks_map};
+    use crate::structs::attempt::Attempt;
 
     use super::*;
-
-    pub fn build_sheets_map(sheets: Vec<Sheet>) -> HashMap<String, Sheet> {
-        sheets
-            .iter()
-            .enumerate()
-            .map(|(index, sheet)| (index.to_string(), sheet.clone()))
-            .collect()
-    }
 
     #[test]
     fn test_parse() {
@@ -111,7 +103,7 @@ pub mod tests {
     #[test]
     fn test_progress() {
         let sheet = Sheet {
-            tasks: build_tasks_map(vec![
+            tasks: vec![
                 Task {
                     attempts: vec![Attempt::Correct],
                     ..Task::test_default_empty()
@@ -120,7 +112,7 @@ pub mod tests {
                     attempts: vec![Attempt::Incorrect],
                     ..Task::test_default_empty()
                 },
-            ]),
+            ],
             ..Sheet::test_default1()
         };
 

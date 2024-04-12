@@ -8,26 +8,26 @@
                     "name": "exercise 01",
                     "tasks_path": "/path/to/tasks.pdf",
                     "solutions_path": "/path/to/solution.pdf",
-                    "tasks": {
-                        "1.": {
-                            "position": 0,
+                    "tasks": [
+                        {
+                            "name": "1.",
                             "topic": "Vectors",
                             "attempts": [],
-                            "subtasks": {
-                                "a)": {
-                                    "position": 0,
+                            "subtasks": [
+                                {
+                                    "name": "a)",
                                     "attempts": ["x", "5/6", "v"],
-                                    "subtasks": {}
+                                    "subtasks": []
                                 },
-                                "b)": {
-                                    "position": 1,
+                                {
+                                    "name": "b)",
                                     "topic": "Scalar Product",
                                     "attempts": ["h", "-"],
-                                    "subtasks": {}
+                                    "subtasks": []
                                 }
-                            }
+                            ]
                         }
-                    }
+                    ]
                 }
             ]
         },

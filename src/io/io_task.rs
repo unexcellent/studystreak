@@ -1,12 +1,11 @@
 use serde::Deserialize;
-use std::collections::HashMap;
 
 #[derive(Debug, Deserialize, PartialEq, Clone)]
 pub struct IoTask {
+    pub name: String,
     pub topic: Option<String>,
     pub attempts: Vec<String>,
-    pub subtasks: HashMap<String, IoTask>,
-    pub position: u32,
+    pub subtasks: Vec<IoTask>,
 }
 
 #[cfg(test)]
@@ -15,18 +14,18 @@ pub mod test_defaults {
     impl IoTask {
         pub fn test_default1() -> IoTask {
             IoTask {
+                name: "1.".to_string(),
                 topic: Some("Vectors".to_owned()),
                 attempts: vec!["h".to_owned(), "v".to_owned()],
-                subtasks: HashMap::from([("a)".to_owned(), IoTask::test_default2())]),
-                position: 0,
+                subtasks: vec![IoTask::test_default2()],
             }
         }
         pub fn test_default2() -> IoTask {
             IoTask {
+                name: "a)".to_string(),
                 topic: Some("Tractors".to_owned()),
                 attempts: vec!["9/11".to_owned()],
-                subtasks: HashMap::new(),
-                position: 0,
+                subtasks: Vec::new(),
             }
         }
     }

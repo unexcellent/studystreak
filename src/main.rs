@@ -52,8 +52,8 @@ fn main() -> Result<(), slint::PlatformError> {
                 .sheets
                 .get(sheet_index as usize).unwrap();
 
-            for (task_name, task) in &sheet.tasks {
-                slint_tasks.extend(task.to_slint(task_name.to_string(), 0));
+            for task in &sheet.tasks {
+                slint_tasks.extend(task.to_slint(0));
             }
 
             ui_weak
