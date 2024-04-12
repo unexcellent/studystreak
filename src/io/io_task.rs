@@ -5,7 +5,8 @@ use std::collections::HashMap;
 pub struct IoTask {
     pub topic: Option<String>,
     pub attempts: Vec<String>,
-    pub subtasks: HashMap<String, IoTask>
+    pub subtasks: HashMap<String, IoTask>,
+    pub position: u32,
 }
 
 #[cfg(test)]
@@ -16,14 +17,16 @@ pub mod test_defaults {
             IoTask {
                 topic: Some("Vectors".to_owned()),
                 attempts: vec!["h".to_owned(), "v".to_owned()],
-                subtasks: HashMap::from([("a)".to_owned(), IoTask::test_default2())])
+                subtasks: HashMap::from([("a)".to_owned(), IoTask::test_default2())]),
+                position: 0,
             }
         }
         pub fn test_default2() -> IoTask {
             IoTask {
                 topic: Some("Tractors".to_owned()),
                 attempts: vec!["9/11".to_owned()],
-                subtasks: HashMap::new()
+                subtasks: HashMap::new(),
+                position: 0,
             }
         }
     }

@@ -65,7 +65,7 @@ fn main() -> Result<(), slint::PlatformError> {
         let mut indented_string = String::new();
 
         for i in 0..depth {
-            indented_string.push_str("  ");
+            indented_string.push_str(" ");
         }
 
         indented_string.push_str(&string.to_string());

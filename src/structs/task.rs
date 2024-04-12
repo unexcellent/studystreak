@@ -1,3 +1,4 @@
+use std::borrow::BorrowMut;
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
@@ -11,7 +12,8 @@ use crate::{ProgressValues, SlintTask};
 pub struct Task {
     pub topic: Option<String>,
     pub attempts: Vec<Attempt>,
-    pub subtasks: HashMap<String, Task>
+    pub subtasks: HashMap<String, Task>,
+    pub position: u32,
 }
 impl Task {
     pub fn parse(io_task: &IoTask) -> Result<Task, UnsupportedAttemptStringError> {
@@ -28,43 +30,29 @@ impl Task {
         Ok(Task {
             topic: io_task.topic.clone(),
             attempts,
-            subtasks
+            subtasks,
+            position: io_task.position,
         })
     }
 
     pub fn to_slint(&self, name: String, depth: u8) -> Vec<SlintTask> {
         let mut slint_tasks = Vec::new();
 
-        if self.subtasks.is_empty() {
-            slint_tasks.push(
-                SlintTask {
-                    name: SharedString::from(&name.to_string()),
-                    topic: match &self.topic {
-                        Some(t) => SharedString::from(t),
-                        None => SharedString::from("")
-                    },
-                    attempts: Task::attempts_to_slint(&self.attempts),
-                    depth: depth as i32,
-                }
-            );
-        } else {
-            slint_tasks.push(
-                SlintTask {
-                    name: SharedString::from(&name.to_string()),
-                    topic: match &self.topic {
-                        Some(t) => SharedString::from(t),
-                        None => SharedString::from("")
-                    },
-                    attempts: ModelRc::from(Rc::new(VecModel::default())),
-                    depth: depth as i32,
-                }
-            );
-
-            for (subtask_name, subtask) in &self.subtasks {
-                slint_tasks.extend(subtask.to_slint(subtask_name.to_string(), depth + 1));
+        slint_tasks.push(
+            SlintTask {
+                name: SharedString::from(&name.to_string()),
+                topic: match &self.topic {
+                    Some(t) => SharedString::from(t),
+                    None => SharedString::from("")
+                },
+                attempts: Task::attempts_to_slint(&self.attempts),
+                depth: depth as i32,
+                position: self.position as i32,
             }
-        }
+        );
 
+        slint_tasks.extend(Task::tasks_to_slint_vec(&self.subtasks, depth + 1));
+        
         slint_tasks
     }
 
@@ -76,6 +64,18 @@ impl Task {
         }
 
         ModelRc::from(attempts_rc)
+    }
+
+    pub fn tasks_to_slint_vec(tasks: &HashMap<String, Task>, depth: u8) -> Vec<SlintTask> {
+        let mut slint_tasks = Vec::new();
+
+        for (task_name, task) in tasks {
+            slint_tasks.extend(task.to_slint(task_name.to_string(), depth + 1));
+        }
+
+        slint_tasks.sort_by(|task_a, task_b| task_a.position.cmp(&task_b.position));
+
+        slint_tasks
     }
 
     pub fn topics(&self) -> HashSet<String> { // todo: rename to topics
@@ -136,21 +136,24 @@ pub mod test_defaults {
             Task {
                 topic: Some("Vectors".to_owned()),
                 attempts: vec![Attempt::WithHelp, Attempt::Correct],
-                subtasks: HashMap::from([("a)".to_owned(), Task::test_default2())])
+                subtasks: HashMap::from([("a)".to_owned(), Task::test_default2())]),
+                position: 0,
             }
         }
         pub fn test_default2() -> Task {
             Task {
                 topic: Some("Tractors".to_owned()),
                 attempts: vec![Attempt::PartiallyCorrect(9, 11)],
-                subtasks: HashMap::new()
+                subtasks: HashMap::new(),
+                position: 0,
             }
         }
         pub fn test_default_empty() -> Task {
             Task {
                 topic: None,
                 attempts: Vec::new(),
-                subtasks: HashMap::new()
+                subtasks: HashMap::new(),
+                position: 0,
             }
         }
     }

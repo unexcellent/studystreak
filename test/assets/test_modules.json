@@ -8,14 +8,17 @@
                     "solutions_path": "/path/to/solution.pdf",
                     "tasks": {
                         "1.": {
+                            "position": 0,
                             "topic": "Vectors",
                             "attempts": [],
                             "subtasks": {
                                 "a)": {
+                                    "position": 0,
                                     "attempts": ["x", "5/6", "v"],
                                     "subtasks": {}
                                 },
                                 "b)": {
+                                    "position": 1,
                                     "topic": "Scalar Product",
                                     "attempts": ["h", "-"],
                                     "subtasks": {}
