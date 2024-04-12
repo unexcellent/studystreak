@@ -3,7 +3,7 @@ use std::collections::HashMap;
 
 use super::io_task::IoTask;
 
-#[derive(Debug, Deserialize, PartialEq)]
+#[derive(Debug, Deserialize, PartialEq, Clone)]
 pub struct IoSheet {
     pub tasks_path: String,
     pub solutions_path: Option<String>,

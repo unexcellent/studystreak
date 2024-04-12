@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
-use super::attempt::UnsupportedAttemptStringError;
 use super::sheet::Sheet;
 use crate::io::io_module::IoModule;
+use crate::io::io_sheet::IoSheet;
 use crate::ProgressValues;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -12,7 +12,7 @@ pub struct Module {
     pub topics: HashSet<String>,
 }
 impl Module {
-    pub fn parse(io_module: &IoModule) -> Result<Module, UnsupportedAttemptStringError> {
+    pub fn parse(io_module: &IoModule) -> Self {
         let mut sheets = HashMap::new();
         for (k, v) in &io_module.sheets {
             sheets.insert(k.to_owned(), Sheet::from(v));
@@ -23,10 +23,12 @@ impl Module {
             topics.extend(s.topics());
         }
 
-        Ok(Module {
-            sheets,
+        Module {
+            sheets: <HashMap<String, IoSheet> as Clone>::clone(&io_module.sheets).into_iter()
+                .map(|(name, sheet)| (name.to_string(), Sheet::from(&sheet)))
+                .collect(),
             topics: topics.iter().map(|t| t.to_string()).collect(),
-        })
+        }
     }
 
     pub fn progress(&self) -> ProgressValues {
@@ -74,7 +76,7 @@ pub mod tests {
     #[test]
     fn test_parse() {
         assert_eq!(
-            Module::parse(&IoModule::test_default1()).unwrap(),
+            Module::parse(&IoModule::test_default1()),
             Module::test_default1()
         )
     }
