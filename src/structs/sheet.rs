@@ -14,13 +14,9 @@ pub struct Sheet {
     pub solutions_path: Option<PathBuf>,
     pub tasks: HashMap<String, Task>,
 }
-impl Sheet {
-    pub fn parse(io_sheet: &IoSheet) -> Self {
-        let mut tasks = HashMap::new();
-        for (k, v) in &io_sheet.tasks {
-            tasks.insert(k.to_owned(), Task::from(v));
-        }
-        
+
+impl From<&IoSheet> for Sheet {
+    fn from(io_sheet: &IoSheet) -> Self {
         Sheet {
             tasks_path: PathBuf::from(&io_sheet.tasks_path),
             solutions_path: io_sheet
@@ -31,7 +27,9 @@ impl Sheet {
                 .collect(),
         }
     }
+}
 
+impl Sheet {
     pub fn topics(&self) -> HashSet<String> {
         let mut topics = HashSet::new();
 
@@ -94,7 +92,7 @@ pub mod tests {
     #[test]
     fn test_parse() {
         assert_eq!(
-            Sheet::parse(&IoSheet::test_default1()),
+            Sheet::from(&IoSheet::test_default1()),
             Sheet::test_default1()
         )
     }
