@@ -1,11 +1,10 @@
-
 use std::collections::{HashMap, HashSet};
 use std::rc::Rc;
 
 use slint::{ModelRc, SharedString, VecModel};
 
-use super::attempt::{Attempt, UnsupportedAttemptStringError};
 use super::super::io::io_task::IoTask;
+use super::attempt::{Attempt, UnsupportedAttemptStringError};
 use crate::{ProgressValues, SlintTask};
 
 #[derive(Debug, PartialEq, Clone)]
@@ -38,21 +37,19 @@ impl Task {
     pub fn to_slint(&self, name: String, depth: u8) -> Vec<SlintTask> {
         let mut slint_tasks = Vec::new();
 
-        slint_tasks.push(
-            SlintTask {
-                name: SharedString::from(&name.to_string()),
-                topic: match &self.topic {
-                    Some(t) => SharedString::from(t),
-                    None => SharedString::from("")
-                },
-                attempts: Task::attempts_to_slint(&self.attempts),
-                depth: depth as i32,
-                position: self.position as i32,
-            }
-        );
+        slint_tasks.push(SlintTask {
+            name: SharedString::from(&name.to_string()),
+            topic: match &self.topic {
+                Some(t) => SharedString::from(t),
+                None => SharedString::from(""),
+            },
+            attempts: Task::attempts_to_slint(&self.attempts),
+            depth: depth as i32,
+            position: self.position as i32,
+        });
 
         slint_tasks.extend(Task::tasks_to_slint_vec(&self.subtasks, depth + 1));
-        
+
         slint_tasks
     }
 
@@ -78,7 +75,8 @@ impl Task {
         slint_tasks
     }
 
-    pub fn topics(&self) -> HashSet<String> { // todo: rename to topics
+    pub fn topics(&self) -> HashSet<String> {
+        // todo: rename to topics
         let mut topics = HashSet::new();
         if self.topic.is_some() {
             topics.insert(self.topic.as_ref().unwrap().clone());
@@ -95,33 +93,28 @@ impl Task {
         let mut progress = ProgressValues {
             correct: 0,
             incorrect: 0,
-            with_help: 0,  
+            with_help: 0,
         };
 
         if self.subtasks.is_empty() {
-            self.attempts.iter()
-                .for_each(|attempt| {
-                    match attempt {
-                        Attempt::Correct => progress.correct += 1,
-                        Attempt::Incorrect => progress.incorrect += 1,
-                        Attempt::WithHelp => progress.with_help += 1,
-                        Attempt::Skipped => {},
-                        Attempt::PartiallyCorrect(correct, incorrect) => {
-                            progress.correct += *correct as i32;
-                            progress.incorrect += *incorrect as i32;
-                        }
-                    }
-                });
+            self.attempts.iter().for_each(|attempt| match attempt {
+                Attempt::Correct => progress.correct += 1,
+                Attempt::Incorrect => progress.incorrect += 1,
+                Attempt::WithHelp => progress.with_help += 1,
+                Attempt::Skipped => {}
+                Attempt::PartiallyCorrect(correct, incorrect) => {
+                    progress.correct += *correct as i32;
+                    progress.incorrect += *incorrect as i32;
+                }
+            });
         } else {
-            self.subtasks
-                .values()
-                .for_each(|subtask| {
-                    let subtask_progress = subtask.progress();
+            self.subtasks.values().for_each(|subtask| {
+                let subtask_progress = subtask.progress();
 
-                    progress.correct += subtask_progress.correct;
-                    progress.with_help += subtask_progress.with_help;
-                    progress.incorrect += subtask_progress.incorrect;
-                });
+                progress.correct += subtask_progress.correct;
+                progress.with_help += subtask_progress.with_help;
+                progress.incorrect += subtask_progress.incorrect;
+            });
         }
 
         progress
@@ -168,11 +161,10 @@ pub mod tests {
     use super::*;
 
     pub fn build_tasks_map(tasks: Vec<Task>) -> HashMap<String, Task> {
-        tasks.iter()
+        tasks
+            .iter()
             .enumerate()
-            .map(|(index, task)| {
-                (index.to_string(), task.clone())
-            })
+            .map(|(index, task)| (index.to_string(), task.clone()))
             .collect()
     }
 
@@ -217,7 +209,8 @@ pub mod tests {
                     Attempt::Incorrect,
                 ],
                 ..Task::test_default_empty()
-            }.progress(),
+            }
+            .progress(),
             ProgressValues {
                 correct: 2,
                 with_help: 1,
@@ -230,11 +223,10 @@ pub mod tests {
     fn test_progress_single_task_skipped() {
         assert_eq!(
             Task {
-                attempts: vec![
-                    Attempt::Skipped
-                ],
+                attempts: vec![Attempt::Skipped],
                 ..Task::test_default_empty()
-            }.progress(),
+            }
+            .progress(),
             ProgressValues {
                 correct: 0,
                 with_help: 0,
@@ -247,11 +239,10 @@ pub mod tests {
     fn test_progress_single_task_partially_correct() {
         assert_eq!(
             Task {
-                attempts: vec![
-                    Attempt::PartiallyCorrect(5, 3)
-                ],
+                attempts: vec![Attempt::PartiallyCorrect(5, 3)],
                 ..Task::test_default_empty()
-            }.progress(),
+            }
+            .progress(),
             ProgressValues {
                 correct: 5,
                 with_help: 0,
@@ -265,15 +256,11 @@ pub mod tests {
         let task = Task {
             subtasks: build_tasks_map(vec![
                 Task {
-                    attempts: vec![
-                        Attempt::Correct,
-                    ],
+                    attempts: vec![Attempt::Correct],
                     ..Task::test_default_empty()
                 },
                 Task {
-                    attempts: vec![
-                        Attempt::WithHelp,
-                    ],
+                    attempts: vec![Attempt::WithHelp],
                     ..Task::test_default_empty()
                 },
             ]),
@@ -293,17 +280,11 @@ pub mod tests {
     #[test]
     fn test_progress_subtasks_and_attempts() {
         let task = Task {
-            subtasks: build_tasks_map(vec![
-                Task {
-                    attempts: vec![
-                        Attempt::Correct,
-                    ],
-                    ..Task::test_default_empty()
-                },
-            ]),
-            attempts: vec![
-                Attempt::Incorrect
-            ],
+            subtasks: build_tasks_map(vec![Task {
+                attempts: vec![Attempt::Correct],
+                ..Task::test_default_empty()
+            }]),
+            attempts: vec![Attempt::Incorrect],
             ..Task::test_default_empty()
         };
 
@@ -316,5 +297,4 @@ pub mod tests {
             }
         )
     }
-
 }

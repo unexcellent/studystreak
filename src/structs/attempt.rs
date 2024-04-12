@@ -18,7 +18,7 @@ impl Attempt {
     /// Construct the attempt enum from a string
     pub fn parse(raw_attempt: &str) -> Result<Attempt, UnsupportedAttemptStringError> {
         if regex_pattern!(r"\d+/\d+").is_match(raw_attempt) {
-            return Ok(Attempt::parse_partially_correct(raw_attempt))
+            return Ok(Attempt::parse_partially_correct(raw_attempt));
         }
 
         match raw_attempt {
@@ -31,13 +31,11 @@ impl Attempt {
     }
 
     fn parse_partially_correct(raw_attempt: &str) -> Attempt {
-        let numbers: Vec<&str> = raw_attempt
-            .split('/')
-            .collect();
+        let numbers: Vec<&str> = raw_attempt.split('/').collect();
 
         Attempt::PartiallyCorrect(
-            numbers.first().unwrap().parse().unwrap(), 
-            numbers.get(1).unwrap().parse().unwrap()
+            numbers.first().unwrap().parse().unwrap(),
+            numbers.get(1).unwrap().parse().unwrap(),
         )
     }
 
@@ -53,10 +51,8 @@ impl Attempt {
     }
 }
 
-
 #[derive(Debug, Clone, PartialEq)]
 pub struct UnsupportedAttemptStringError;
-
 
 #[cfg(test)]
 pub mod tests {
@@ -89,7 +85,9 @@ pub mod tests {
 
     #[test]
     fn test_invalid_str() {
-        assert_eq!(Attempt::parse("some_garbage"), Err(UnsupportedAttemptStringError));
+        assert_eq!(
+            Attempt::parse("some_garbage"),
+            Err(UnsupportedAttemptStringError)
+        );
     }
-
 }

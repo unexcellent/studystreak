@@ -1,8 +1,8 @@
 use std::collections::{HashMap, HashSet};
 
-use crate::io::io_module::IoModule;
-use super::sheet::Sheet;
 use super::attempt::UnsupportedAttemptStringError;
+use super::sheet::Sheet;
+use crate::io::io_module::IoModule;
 use crate::ProgressValues;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -17,33 +17,32 @@ impl Module {
         for (k, v) in &io_module.sheets {
             sheets.insert(k.to_owned(), Sheet::parse(v)?);
         }
-    
+
         let mut topics = HashSet::new();
         for s in sheets.values() {
             topics.extend(s.topics());
         }
-    
+
         Ok(Module {
             sheets,
             topics: topics.iter().map(|t| t.to_string()).collect(),
         })
     }
-    
+
     pub fn progress(&self) -> ProgressValues {
         let mut progress = ProgressValues {
             correct: 0,
             incorrect: 0,
-            with_help: 0,  
+            with_help: 0,
         };
 
-        self.sheets.iter()
-            .for_each(|(_, sheet)| {
-                let sheet_progress = sheet.progress();
+        self.sheets.iter().for_each(|(_, sheet)| {
+            let sheet_progress = sheet.progress();
 
-                progress.correct += sheet_progress.correct;
-                progress.with_help += sheet_progress.with_help;
-                progress.incorrect += sheet_progress.incorrect;
-            });
+            progress.correct += sheet_progress.correct;
+            progress.with_help += sheet_progress.with_help;
+            progress.incorrect += sheet_progress.incorrect;
+        });
 
         progress
     }
@@ -53,10 +52,10 @@ impl Module {
 pub mod test_defaults {
     use super::*;
     impl Module {
-        pub fn test_default1() ->  Module {
+        pub fn test_default1() -> Module {
             Module {
                 sheets: HashMap::from([("e01".to_owned(), Sheet::test_default1())]),
-                topics: HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
+                topics: HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()]),
             }
         }
     }
@@ -64,7 +63,11 @@ pub mod test_defaults {
 
 #[cfg(test)]
 pub mod tests {
-    use crate::structs::{attempt::Attempt, sheet::tests::build_sheets_map, task::{tests::build_tasks_map, Task}};
+    use crate::structs::{
+        attempt::Attempt,
+        sheet::tests::build_sheets_map,
+        task::{tests::build_tasks_map, Task},
+    };
 
     use super::*;
 
@@ -81,25 +84,17 @@ pub mod tests {
         let module = Module {
             sheets: build_sheets_map(vec![
                 Sheet {
-                    tasks: build_tasks_map(vec![
-                        Task {
-                            attempts: vec![
-                                Attempt::Correct
-                            ],
-                            ..Task::test_default_empty()
-                        }
-                    ]),
+                    tasks: build_tasks_map(vec![Task {
+                        attempts: vec![Attempt::Correct],
+                        ..Task::test_default_empty()
+                    }]),
                     ..Sheet::test_default1()
                 },
                 Sheet {
-                    tasks: build_tasks_map(vec![
-                        Task {
-                            attempts: vec![
-                                Attempt::Incorrect
-                            ],
-                            ..Task::test_default_empty()
-                        }
-                    ]),
+                    tasks: build_tasks_map(vec![Task {
+                        attempts: vec![Attempt::Incorrect],
+                        ..Task::test_default_empty()
+                    }]),
                     ..Sheet::test_default1()
                 },
             ]),

@@ -1,9 +1,12 @@
-use std::{collections::{HashMap, HashSet}, path::PathBuf};
+use std::{
+    collections::{HashMap, HashSet},
+    path::PathBuf,
+};
 
 use crate::io::io_sheet::IoSheet;
 
-use super::task::Task;
 use super::attempt::UnsupportedAttemptStringError;
+use super::task::Task;
 use crate::ProgressValues;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -19,11 +22,14 @@ impl Sheet {
         for (k, v) in &io_sheet.tasks {
             tasks.insert(k.to_owned(), Task::parse(v)?);
         }
-        Ok( Sheet {
+        Ok(Sheet {
             tasks_path: PathBuf::from(&io_sheet.tasks_path),
-            solutions_path: io_sheet.solutions_path.as_ref().map(|path| PathBuf::from(&path)),
+            solutions_path: io_sheet
+                .solutions_path
+                .as_ref()
+                .map(|path| PathBuf::from(&path)),
             tasks,
-        } )
+        })
     }
 
     pub fn topics(&self) -> HashSet<String> {
@@ -40,17 +46,16 @@ impl Sheet {
         let mut progress = ProgressValues {
             correct: 0,
             incorrect: 0,
-            with_help: 0,  
+            with_help: 0,
         };
 
-        self.tasks.iter()
-            .for_each(|(_, task)| {
-                let task_progress = task.progress();
+        self.tasks.iter().for_each(|(_, task)| {
+            let task_progress = task.progress();
 
-                progress.correct += task_progress.correct;
-                progress.with_help += task_progress.with_help;
-                progress.incorrect += task_progress.incorrect;
-            });
+            progress.correct += task_progress.correct;
+            progress.with_help += task_progress.with_help;
+            progress.incorrect += task_progress.incorrect;
+        });
 
         progress
     }
@@ -79,11 +84,10 @@ pub mod tests {
     use super::*;
 
     pub fn build_sheets_map(sheets: Vec<Sheet>) -> HashMap<String, Sheet> {
-        sheets.iter()
+        sheets
+            .iter()
             .enumerate()
-            .map(|(index, sheet)| {
-                (index.to_string(), sheet.clone())
-            })
+            .map(|(index, sheet)| (index.to_string(), sheet.clone()))
             .collect()
     }
 
@@ -108,15 +112,11 @@ pub mod tests {
         let sheet = Sheet {
             tasks: build_tasks_map(vec![
                 Task {
-                    attempts: vec![
-                        Attempt::Correct
-                    ],
+                    attempts: vec![Attempt::Correct],
                     ..Task::test_default_empty()
                 },
                 Task {
-                    attempts: vec![
-                        Attempt::Incorrect
-                    ],
+                    attempts: vec![Attempt::Incorrect],
                     ..Task::test_default_empty()
                 },
             ]),
