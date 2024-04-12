@@ -40,6 +40,17 @@ impl Attempt {
             numbers.get(1).unwrap().parse().unwrap()
         )
     }
+
+    /// Convert the attempt back into a string
+    pub fn to_string(&self) -> String {
+        match self {
+            Attempt::Correct => "v".to_string(),
+            Attempt::WithHelp => "h".to_string(),
+            Attempt::Incorrect => "x".to_string(),
+            Attempt::PartiallyCorrect(correct, incorrect) => format!("{correct}/{incorrect}"),
+            Attempt::Skipped => "-".to_string(),
+        }
+    }
 }
 
 
