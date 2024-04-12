@@ -10,6 +10,7 @@ use crate::ProgressValues;
 #[derive(Debug, PartialEq, Clone)]
 /// An exercise sheet (a single pdf file containing tasks)
 pub struct Sheet {
+    pub name: String,
     pub tasks_path: PathBuf,
     pub solutions_path: Option<PathBuf>,
     pub tasks: HashMap<String, Task>,
@@ -18,6 +19,7 @@ pub struct Sheet {
 impl From<&IoSheet> for Sheet {
     fn from(io_sheet: &IoSheet) -> Self {
         Sheet {
+            name: io_sheet.name.to_string(),
             tasks_path: PathBuf::from(&io_sheet.tasks_path),
             solutions_path: io_sheet
                 .solutions_path.as_ref()
@@ -65,6 +67,7 @@ pub mod test_defaults {
     impl Sheet {
         pub fn test_default1() -> Sheet {
             Sheet {
+                name: "e01".to_string(),
                 tasks_path: PathBuf::from("/path/to/tasks.pdf"),
                 solutions_path: Some(PathBuf::from("/path/to/solutions.pdf")),
                 tasks: HashMap::from([("1.".to_owned(), Task::test_default1())]),

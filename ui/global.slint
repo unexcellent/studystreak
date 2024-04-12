@@ -7,7 +7,7 @@ import { Padding, Palette } from "./structs/style.slint";
 export global State {
     in-out property <string> active-page: "start";
     in-out property <int> active-module-index;
-    in-out property <string> active-sheet;
+    in-out property <int> active-sheet-index;
 
     in-out property <[SlintModule]> modules; // modules displayed on the start page
     in-out property <[SlintSheet]> sheets; // sheets displayed on the last loaded module page
@@ -17,7 +17,7 @@ export global State {
 
 export global Callbacks {
     callback populate_module_page(int);
-    callback populate_sheet_page(int, string);
+    callback populate_sheet_page(int, int);
     pure callback indent_based_on_depth(string, int) -> string;
 }
 

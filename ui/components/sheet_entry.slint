@@ -3,15 +3,15 @@ import { ProgressBar } from "progressbar.slint";
 import { State, Callbacks, Style } from "../global.slint";
 
 export component SheetEntry inherits Rectangle {
-    in-out property <SlintSheet> sheet;
+    in-out property <int> sheet_index;
     callback clicked();
 
     clicked => {
         Callbacks.populate_sheet_page(
             State.active-module-index,
-            self.sheet.name,
+            self.sheet_index,
         );
-        State.active-sheet = self.sheet.name;
+        State.active-sheet-index = self.sheet_index;
         State.active-page = "sheet";
     }
 
@@ -26,7 +26,7 @@ export component SheetEntry inherits Rectangle {
         alignment: center;
 
         Text {
-            text: root.sheet.name;
+            text: State.sheets[State.active-sheet-index].name;
             color: Style.color.primary;
             horizontal-alignment: left;
             vertical-alignment: center;
@@ -38,7 +38,7 @@ export component SheetEntry inherits Rectangle {
     
         ProgressBar {
             width: root.progressbar_width;
-            values: root.sheet.progress;
+            values: State.sheets[State.active-sheet-index].progress;
             y: (parent.height - self.height) * 0.5;
         }
     }

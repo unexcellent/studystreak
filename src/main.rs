@@ -1,7 +1,6 @@
 #![allow(dead_code, unused_variables, unused_mut, unused_assignments)] // TODO: remove
 
-use std::collections::HashMap;
-use std::{path::PathBuf, rc::Rc};
+use std::{os::unix::process, path::PathBuf, rc::Rc};
 slint::include_modules!();
 
 #[path = "structs/mod.rs"]
@@ -27,9 +26,9 @@ fn main() -> Result<(), slint::PlatformError> {
 
             let module = module_data.get(module_index as usize).unwrap();
             let mut slint_sheets: Rc<VecModel<SlintSheet>> = Rc::new(VecModel::default());
-            for (name, sheet) in &module.sheets {
+            for sheet in &module.sheets {
                 slint_sheets.push(SlintSheet {
-                    name: SharedString::from(name),
+                    name: SharedString::from(&sheet.name),
                     progress: sheet.progress(),
                 });
             }
@@ -44,14 +43,14 @@ fn main() -> Result<(), slint::PlatformError> {
         let ui_weak = ui.as_weak().unwrap();
         let module_data = modules.clone();
 
-        move |module_index, sheet_id| {
+        move |module_index, sheet_index| {
             let module_data = module_data.clone();
 
             let mut slint_tasks: Rc<VecModel<SlintTask>> = Rc::new(VecModel::default());
             let sheet = module_data
                 .get(module_index as usize).unwrap()
                 .sheets
-                .get(&sheet_id.to_string()).unwrap();
+                .get(sheet_index as usize).unwrap();
 
             for (task_name, task) in &sheet.tasks {
                 slint_tasks.extend(task.to_slint(task_name.to_string(), 0));

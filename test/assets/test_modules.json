@@ -3,8 +3,9 @@
     "modules": [
         {
             "name": "math1",
-            "sheets": {
-                "e01": {
+            "sheets": [
+                {
+                    "name": "exercise 01",
                     "tasks_path": "/path/to/tasks.pdf",
                     "solutions_path": "/path/to/solution.pdf",
                     "tasks": {
@@ -28,11 +29,11 @@
                         }
                     }
                 }
-            }
+            ]
         },
         {
             "name": "mech1",
-            "sheets": {}
+            "sheets": []
         }
     ]
 }

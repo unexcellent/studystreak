@@ -13,7 +13,7 @@ export component SheetPage inherits Rectangle {
     property <length> task_entry_height: 30px;
 
     VerticalLayout {
-        PageHeader { text: State.active-sheet; }
+        PageHeader { text: State.sheets[State.active-sheet-index].name; }
 
         HorizontalLayout {
             height: 40px;
