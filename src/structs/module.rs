@@ -15,7 +15,7 @@ impl Module {
     pub fn parse(io_module: &IoModule) -> Result<Module, UnsupportedAttemptStringError> {
         let mut sheets = HashMap::new();
         for (k, v) in &io_module.sheets {
-            sheets.insert(k.to_owned(), Sheet::parse(v)?);
+            sheets.insert(k.to_owned(), Sheet::parse(v));
         }
 
         let mut topics = HashSet::new();

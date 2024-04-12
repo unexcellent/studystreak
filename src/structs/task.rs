@@ -29,7 +29,7 @@ impl From<&IoTask> for Task {
             topic: io_task.topic.clone(),
             attempts,
             subtasks: io_task.subtasks.iter()
-                .map(|(id, subtask)| (id.to_string(), Task::from(subtask)))
+                .map(|(name, subtask)| (name.to_string(), Task::from(subtask)))
                 .collect(),
             position: io_task.position,
         }

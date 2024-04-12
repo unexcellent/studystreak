@@ -3,9 +3,7 @@ use std::{
     path::PathBuf,
 };
 
-use crate::io::io_sheet::IoSheet;
-
-use super::attempt::UnsupportedAttemptStringError;
+use crate::io::{io_sheet::IoSheet, io_task::IoTask};
 use super::task::Task;
 use crate::ProgressValues;
 
@@ -17,19 +15,21 @@ pub struct Sheet {
     pub tasks: HashMap<String, Task>,
 }
 impl Sheet {
-    pub fn parse(io_sheet: &IoSheet) -> Result<Sheet, UnsupportedAttemptStringError> {
+    pub fn parse(io_sheet: &IoSheet) -> Self {
         let mut tasks = HashMap::new();
         for (k, v) in &io_sheet.tasks {
             tasks.insert(k.to_owned(), Task::from(v));
         }
-        Ok(Sheet {
+        
+        Sheet {
             tasks_path: PathBuf::from(&io_sheet.tasks_path),
             solutions_path: io_sheet
-                .solutions_path
-                .as_ref()
+                .solutions_path.as_ref()
                 .map(|path| PathBuf::from(&path)),
-            tasks,
-        })
+            tasks: <HashMap<String, IoTask> as Clone>::clone(&io_sheet.tasks).into_iter()
+                .map(|(name, task)| (name.to_string(), Task::from(&task)))
+                .collect(),
+        }
     }
 
     pub fn topics(&self) -> HashSet<String> {
@@ -94,7 +94,7 @@ pub mod tests {
     #[test]
     fn test_parse() {
         assert_eq!(
-            Sheet::parse(&IoSheet::test_default1()).unwrap(),
+            Sheet::parse(&IoSheet::test_default1()),
             Sheet::test_default1()
         )
     }
