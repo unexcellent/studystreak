@@ -17,6 +17,6 @@ export component MainPage inherits Rectangle {
         padding: Style.padding.medium;
         if State.active-page == "start": StartPage {}
         if State.active-page == "module": ModulePage {}
-        if State.active-page == "sheet": SheetPage {}
+        if State.active-page == "sheet": SheetPage { width: root.width; }
     }
 }

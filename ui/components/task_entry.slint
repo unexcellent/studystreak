@@ -1,32 +1,33 @@
 import { SlintTask } from "../structs/task.slint";
 import { State, Callbacks, Style } from "../global.slint";
+import { LineEdit } from "./line_edit.slint";
 
 export component TaskEntry inherits Rectangle {
     in-out property <SlintTask> task;
 
-    in property <percent> task_column_width;
-    in property <percent> topic_column_width;
-    in property <percent> attempts_column_width;
-    in property <percent> options_column_width;
+    in property <length> task_column_width;
+    in property <length> topic_column_width;
+    in property <length> attempts_column_width;
+    in property <length> options_column_width;
 
     HorizontalLayout {
-        TextInput {
+        LineEdit {
             text: Callbacks.indent_based_on_depth(task.name, task.depth);
 
-            font-family: "Menlo";
-            color: Style.color.primary;
+            // font-family: "Menlo";
+            // color: Style.color.primary;
             horizontal-alignment: left;
-            vertical-alignment: center;
+            // vertical-alignment: center;
             font-size: 20px;
             width: root.task_column_width;
         }
-        TextInput {
+        LineEdit {
             text: task.topic;
 
-            font-family: "Menlo";
-            color: Style.color.primary;
+            // font-family: "Menlo";
+            // color: Style.color.primary;
             horizontal-alignment: left;
-            vertical-alignment: center;
+            // vertical-alignment: center;
             font-size: 20px;
             width: root.topic_column_width;
         }
