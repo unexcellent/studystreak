@@ -40,6 +40,27 @@ fn main() -> Result<(), slint::PlatformError> {
         }
     });
 
+    ui.global::<Events>().on_populate_sheet_page({
+        let ui_weak = ui.as_weak().unwrap();
+        let module_data = modules.clone();
+
+        move |module_id, sheet_id| {
+            let module_data = module_data.clone();
+
+            let mut slint_tasks: Rc<VecModel<SlintTask>> = Rc::new(VecModel::default());
+            let sheet = module_data
+                .get(&module_id.to_string()).unwrap()
+                .sheets
+                .get(&sheet_id.to_string()).unwrap();
+
+            for (task_name, task) in &sheet.tasks {
+                slint_tasks.push(task.to_slint(task_name.to_string()));
+            }
+
+            ui_weak.global::<State>().set_tasks(ModelRc::from(slint_tasks));
+        }
+    });
+
     populate_start_page(&modules, &ui);
 
     ui.run()
@@ -58,32 +79,3 @@ fn populate_start_page(modules: &HashMap<String, Module>, ui: &AppWindow) {
 
     ui.global::<State>().set_modules(ModelRc::from(slint_modules));
 }
-
-// fn populate_module_page(module: &Module, mut ui: AppWindow) {
-//     let mut slint_sheets: Rc<VecModel<SlintSheet>> = Rc::new(VecModel::default());
-
-//     for (name, sheet) in &module.sheets {
-//         slint_sheets.push(SlintSheet {
-//             name: SharedString::from(name),
-//             progress: sheet.progress()
-//         });
-//     }
-
-//     ui.global::<State>().set_sheets(ModelRc::from(slint_sheets));
-// }
-
-// fn set_event_methods(modules: HashMap<String, Module>, ui: &AppWindow) {
-//     ui.global::<Events>().on_populate_module_page(|module_id| {
-//         let mut slint_sheets: Rc<VecModel<SlintSheet>> = Rc::new(VecModel::default());
-//         let module = modules.get(&module_id.to_string()).unwrap();
-
-//         for (name, sheet) in &module.sheets {
-//             slint_sheets.push(SlintSheet {
-//                 name: SharedString::from(name),
-//                 progress: sheet.progress()
-//             });
-//         }
-
-//         ui.global::<State>().set_sheets(ModelRc::from(slint_sheets));
-//     });
-// }

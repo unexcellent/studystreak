@@ -1,8 +1,11 @@
 use std::collections::{HashMap, HashSet};
+use std::rc::Rc;
+
+use slint::{ModelRc, SharedString, VecModel};
 
 use super::attempt::{Attempt, UnsupportedAttemptStringError};
 use super::super::io::io_task::IoTask;
-use crate::ProgressValues;
+use crate::{ProgressValues, SlintTask};
 
 #[derive(Debug, PartialEq, Clone)]
 pub struct Task {
@@ -27,6 +30,28 @@ impl Task {
             attempts,
             subtasks
         })
+    }
+
+    pub fn to_slint(&self, name: String) -> SlintTask {
+        SlintTask {
+            name: SharedString::from(name),
+            topic: match &self.topic {
+                Some(t) => SharedString::from(t),
+                None => SharedString::from("")
+            },
+            attempts: Task::attempts_to_slint(&self.attempts),
+            subtasks: ModelRc::from(Rc::new(VecModel::default()))
+        }
+    }
+
+    fn attempts_to_slint(attempts: &Vec<Attempt>) -> ModelRc<SharedString> {
+        let mut attempts_rc: Rc<VecModel<SharedString>> = Rc::new(VecModel::default());
+
+        for attempt in attempts {
+            attempts_rc.push(SharedString::from(attempt.to_string()));
+        }
+
+        ModelRc::from(attempts_rc)
     }
 
     pub fn topics(&self) -> HashSet<String> { // todo: rename to topics
@@ -109,6 +134,10 @@ pub mod test_defaults {
 
 #[cfg(test)]
 pub mod tests {
+    use std::rc::Rc;
+
+    use slint::{ModelRc, SharedString, VecModel};
+
     use super::*;
 
     pub fn build_tasks_map(tasks: Vec<Task>) -> HashMap<String, Task> {
@@ -118,6 +147,16 @@ pub mod tests {
                 (index.to_string(), task.clone())
             })
             .collect()
+    }
+
+    pub fn build_attempts_rc(attempts: Vec<&str>) -> ModelRc<SharedString> {
+        let mut attempts_rc: Rc<VecModel<SharedString>> = Rc::new(VecModel::default());
+
+        for attempt in attempts {
+            attempts_rc.push(SharedString::from(attempt));
+        }
+
+        ModelRc::from(attempts_rc)
     }
 
     #[test]

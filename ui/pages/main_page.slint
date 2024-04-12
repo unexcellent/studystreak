@@ -1,6 +1,7 @@
 import { State, Style } from "../global.slint";
 import { StartPage } from "start_page.slint";
 import { ModulePage } from "module_page.slint";
+import { SheetPage } from "sheet_page.slint";
 
 export component MainPage inherits Rectangle {
     vertical-stretch: 1;
@@ -16,5 +17,6 @@ export component MainPage inherits Rectangle {
         padding: Style.padding.medium;
         if State.active-page == "start": StartPage {}
         if State.active-page == "module": ModulePage {}
+        if State.active-page == "sheet": SheetPage {}
     }
 }

@@ -1,19 +1,23 @@
 import { SlintModule } from "./structs/module.slint";
 import { SlintSheet } from "./structs/sheet.slint";
 import { SlintTopic } from "./structs/topic.slint";
+import { SlintTask } from "./structs/task.slint";
 import { Padding, Palette } from "./structs/style.slint";
 
 export global State {
     in-out property <string> active-page: "start";
     in-out property <string> active-module;
+    in-out property <string> active-sheet;
 
     in-out property <[SlintModule]> modules; // modules displayed on the start page
     in-out property <[SlintSheet]> sheets; // sheets displayed on the last loaded module page
     in-out property <[SlintSheet]> topics; // topics displayed on the last loaded module page
+    in-out property <[SlintTask]> tasks; // tasks displayed on the last loaded sheet page
 }
 
 export global Events {
     callback populate_module_page(string);
+    callback populate_sheet_page(string, string);
 }
 
 export global Style {

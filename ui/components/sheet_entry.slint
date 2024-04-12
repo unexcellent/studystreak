@@ -4,6 +4,16 @@ import { State, Events, Style } from "../global.slint";
 
 export component SheetEntry inherits Rectangle {
     in-out property <SlintSheet> sheet;
+    callback clicked();
+
+    clicked => {
+        Events.populate_sheet_page(
+            State.active-module,
+            self.sheet.name,
+        );
+        State.active-sheet = self.sheet.name;
+        State.active-page = "sheet";
+    }
 
     border-color: Style.color.primary;
     border-width: 1px;
@@ -31,5 +41,14 @@ export component SheetEntry inherits Rectangle {
             values: root.sheet.progress;
             y: (parent.height - self.height) * 0.5;
         }
+    }
+
+    TouchArea {
+        clicked => {
+            root.clicked();
+        }
+
+        width: 100%;
+        height: 100%;
     }
 }

@@ -1,0 +1,8 @@
+import { State, Events } from "../global.slint";
+import { PageHeader } from "../components/page_header.slint";
+
+export component SheetPage inherits Rectangle {
+    VerticalLayout {
+        PageHeader { text: State.active-sheet; }
+    }
+}
