@@ -1,6 +1,6 @@
 import { State, Callbacks, Style } from "../global.slint";
 import { PageHeader } from "../components/page_header.slint";
-import { ScrollView } from "std-widgets.slint";
+import { ScrollView, Button } from "std-widgets.slint";
 import { TaskEntry } from "../components/task_entry.slint";
 import { SlintTask } from "../structs/task.slint";
 
@@ -54,7 +54,7 @@ export component SheetPage inherits Rectangle {
             viewport-height: (root.task_entry_height + Style.padding.small) * State.tasks.length;
 
             for task[index] in State.tasks: TaskEntry {
-                task: task;
+                task_index: index;
 
                 task_column_width: root.task_column_width;
                 topic_column_width: root.topic_column_width;

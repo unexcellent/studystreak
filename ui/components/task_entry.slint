@@ -1,14 +1,20 @@
 import { SlintTask } from "../structs/task.slint";
 import { State, Callbacks, Style } from "../global.slint";
 import { LineEdit } from "./line_edit.slint";
+import { ScrollView, Button } from "std-widgets.slint";
+import { AttemptSquare } from "attempt_square.slint";
 
 export component TaskEntry inherits Rectangle {
-    in-out property <SlintTask> task;
+    in-out property <int> task_index;
+
+    property <SlintTask> task: State.tasks[task_index];
 
     in property <length> task_column_width;
     in property <length> topic_column_width;
     in property <length> attempts_column_width;
     in property <length> options_column_width;
+
+    property <length> attempt_square_width: 40px;
 
     HorizontalLayout {
         LineEdit {
@@ -24,6 +30,32 @@ export component TaskEntry inherits Rectangle {
             horizontal-alignment: left;
             font-size: 20px;
             width: root.topic_column_width;
+        }
+
+        ScrollView {
+            width: root.attempts_column_width;
+            viewport-width: (root.task.attempts.length + 1) * (root.attempt_square_width + Style.padding.medium);
+
+            for attempt[index] in root.task.attempts: AttemptSquare {
+                attempt_index: index;
+                task_index: root.task_index;
+
+                width: root.attempt_square_width;
+                height: root.height;
+
+                x: (root.attempt_square_width + Style.padding.medium) * index;
+                y: 0;
+            }
+
+            Button {
+                text: "+";
+
+                width: root.attempt_square_width;
+                height: root.height;
+
+                x: (root.attempt_square_width + Style.padding.medium) * root.task.attempts.length;
+                y: 0;
+            }
         }
     }
 }

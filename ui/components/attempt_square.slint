@@ -1,0 +1,16 @@
+import { LineEdit } from "line_edit.slint";
+import { State, Callbacks, Style } from "../global.slint";
+
+export component AttemptSquare inherits Rectangle {
+    in-out property <int> attempt_index;
+    in-out property <int> task_index;
+
+    LineEdit {
+        text: State.tasks[root.task_index].attempts[attempt_index];
+        horizontal-alignment: center;
+        font-size: 20px;
+
+        width: root.width;
+        height: root.height;
+    }
+}
