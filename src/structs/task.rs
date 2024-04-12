@@ -14,8 +14,9 @@ pub struct Task {
     pub subtasks: HashMap<String, Task>,
     pub position: u32,
 }
-impl Task {
-    pub fn parse(io_task: &IoTask) -> Task {
+
+impl From<&IoTask> for Task {
+    fn from(io_task: &IoTask) -> Self {
         let mut attempts = Vec::new();
         for attempt_str in &io_task.attempts {
             match Attempt::parse(&attempt_str) {
@@ -28,11 +29,14 @@ impl Task {
             topic: io_task.topic.clone(),
             attempts,
             subtasks: io_task.subtasks.iter()
-                .map(|(id, subtask)| (id.to_string(), Task::parse(subtask)))
+                .map(|(id, subtask)| (id.to_string(), Task::from(subtask)))
                 .collect(),
             position: io_task.position,
         }
     }
+}
+
+impl Task {
 
     pub fn to_slint(&self, name: String, depth: u8) -> Vec<SlintTask> {
         let mut slint_tasks = Vec::new();
@@ -179,9 +183,9 @@ pub mod tests {
     }
 
     #[test]
-    fn test_parse() {
+    fn test_from_iotask() {
         assert_eq!(
-            Task::parse(&IoTask::test_default1()),
+            Task::from(&IoTask::test_default1()),
             Task::test_default1()
         )
     }

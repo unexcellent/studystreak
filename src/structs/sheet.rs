@@ -20,7 +20,7 @@ impl Sheet {
     pub fn parse(io_sheet: &IoSheet) -> Result<Sheet, UnsupportedAttemptStringError> {
         let mut tasks = HashMap::new();
         for (k, v) in &io_sheet.tasks {
-            tasks.insert(k.to_owned(), Task::parse(v));
+            tasks.insert(k.to_owned(), Task::from(v));
         }
         Ok(Sheet {
             tasks_path: PathBuf::from(&io_sheet.tasks_path),
