@@ -7,8 +7,8 @@ import { SlintTask } from "../structs/task.slint";
 export component SheetPage inherits Rectangle {
     property <length> task_column_width: self.width * 20%;
     property <length> topic_column_width: self.width * 30%;
-    property <length> attempts_column_width: self.width * 40%;
-    property <length> options_column_width: self.width * 10%;
+    property <length> attempts_column_width: self.width * 45% - 30px;
+    property <length> options_column_width: 30px;
 
     property <length> task_entry_height: 30px;
 
