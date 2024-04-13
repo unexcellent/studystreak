@@ -1,6 +1,6 @@
 #![allow(dead_code, unused_variables, unused_mut, unused_assignments)] // TODO: remove
 
-use std::{cell::{RefCell, RefMut}, path::PathBuf, rc::Rc};
+use std::{cell::RefCell, path::PathBuf, rc::Rc};
 slint::include_modules!();
 
 #[path = "structs/mod.rs"]
@@ -82,8 +82,4 @@ fn populate_start_page(state: Rc<RefCell<AppState>>) {
 
     binding.ui.upgrade().unwrap().global::<State>()
         .set_modules(ModelRc::from(slint_modules));
-}
-
-fn on_add_attempt(modules: RefMut<Vec<Module>>, ui: &slint::Weak<AppWindow>) {
-
 }
