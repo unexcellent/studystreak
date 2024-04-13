@@ -61,6 +61,15 @@ export component TaskEntry inherits Rectangle {
 
                 x: (root.attempt_square_width + Style.padding.medium) * root.task.attempts.length;
                 y: 0;
+
+                clicked => {
+                    State.active-task-index = root.task_index;
+                    Callbacks.add_attempt();
+                    Callbacks.populate_sheet_page(
+                        State.active-module-index,
+                        State.active-sheet-index
+                    )
+                }
             }
         }
     }

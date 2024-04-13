@@ -6,14 +6,39 @@ slint::include_modules!();
 #[path = "structs/mod.rs"]
 mod structs;
 use slint::{ModelRc, SharedString, VecModel};
-use structs::module::Module;
+use structs::{attempt::Attempt, module::Module};
 
 #[path = "io/mod.rs"]
 mod io;
 
 struct AppState {
-    ui: slint::Weak<AppWindow>,
-    modules: Rc<Vec<Module>>,
+    weak_ui: slint::Weak<AppWindow>,
+    modules: Rc<RefCell<Vec<Module>>>,
+}
+impl AppState {
+    pub fn ui(&self) -> AppWindow {
+        self.weak_ui.upgrade().unwrap()
+    }
+
+    pub fn get_active_module_index(&self) -> usize {
+        self.ui().global::<State>().get_active_module_index() as usize
+    }
+    pub fn get_active_sheet_index(&self) -> usize {
+        self.ui().global::<State>().get_active_sheet_index() as usize
+    }
+    pub fn get_active_task_index(&self) -> usize {
+        self.ui().global::<State>().get_active_task_index() as usize
+    }
+
+    pub fn add_attempt(&mut self) {
+        let mut modules_binding = self.modules.borrow_mut();
+        let active_module = modules_binding.get_mut(self.get_active_module_index()).unwrap();
+        let active_sheet = active_module.sheets.get_mut(self.get_active_sheet_index()).unwrap();
+
+        let task = active_sheet.get_nth_task(self.get_active_task_index() as u32).unwrap();
+        
+        task.attempts.push(Attempt::parse("-").unwrap());
+    }
 }
 
 fn main() {
@@ -23,14 +48,16 @@ fn main() {
     let ui = AppWindow::new().unwrap();
 
     let state = Rc::new(RefCell::new(AppState {
-        ui: ui.as_weak(),
-        modules: Rc::new(modules)
+        weak_ui: ui.as_weak(),
+        modules: Rc::new(RefCell::new(modules)),
     }));
 
     let state_copy = state.clone();
     ui.global::<Callbacks>().on_populate_module_page(move |module_index| {
-        let binding = state_copy.borrow();
-        let module: &Module = binding.modules.get(module_index as usize).unwrap();
+        let mut state_binding = state_copy.try_borrow().unwrap();
+        let mut modules_binding = state_binding.modules.try_borrow().unwrap();
+        
+        let module = modules_binding.get(module_index as usize).unwrap();
 
         let mut slint_sheets: Rc<VecModel<SlintSheet>> = Rc::new(VecModel::default());
         for sheet in &module.sheets {
@@ -40,16 +67,17 @@ fn main() {
             });
         }
 
-        state_copy.borrow().ui.upgrade().unwrap()
+        state_binding.ui()
             .global::<State>()
             .set_sheets(ModelRc::from(slint_sheets));
     });
 
     let state_copy = state.clone();
     ui.global::<Callbacks>().on_populate_sheet_page(move |module_index, sheet_index| {
-        let binding = state_copy.borrow();
-        let sheet = binding
-            .modules
+        let mut state_binding = state_copy.try_borrow().unwrap();
+        let mut modules_binding = state_binding.modules.try_borrow().unwrap();
+
+        let sheet = modules_binding
             .get(module_index as usize).unwrap()
             .sheets
             .get(sheet_index as usize).unwrap();
@@ -59,10 +87,13 @@ fn main() {
             slint_tasks.extend(task.to_slint(0));
         }
 
-        state_copy.borrow().ui.upgrade().unwrap()
+        state_binding.ui()
             .global::<State>()
             .set_tasks(ModelRc::from(slint_tasks));
     });
+
+    let state_copy = state.clone();
+    ui.global::<Callbacks>().on_add_attempt(move || { state_copy.borrow_mut().add_attempt() });
 
     let state_copy = state.clone();
     populate_start_page(state_copy);
@@ -71,15 +102,17 @@ fn main() {
 }
 
 fn populate_start_page(state: Rc<RefCell<AppState>>) {
-    let binding = state.borrow();
+    let mut state_binding = state.try_borrow().unwrap();
+    let mut modules_binding = state_binding.modules.try_borrow().unwrap();
+
     let mut slint_modules: Rc<VecModel<SlintModule>> = Rc::new(VecModel::default());
-    for module in binding.modules.iter() {
+    for module in modules_binding.iter() {
         slint_modules.push(SlintModule {
             name: SharedString::from(module.name.to_string()),
             progress: module.progress(),
         });
     }
 
-    binding.ui.upgrade().unwrap().global::<State>()
+    state_binding.ui().global::<State>()
         .set_modules(ModelRc::from(slint_modules));
 }

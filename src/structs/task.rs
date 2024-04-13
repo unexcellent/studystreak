@@ -121,6 +121,31 @@ impl Task {
 
         progress
     }
+
+    /// Return the number of subtasks recursively. The subtasks of subtasks and the subtasks of 
+    /// those subtasks (and so on) are also counted.
+    pub fn subtask_number(&self) -> u32 {
+        self.subtasks.iter()
+            .map(|subtask| subtask.subtask_number())
+            .sum::<u32>() + 1
+    }
+
+    /// Get the nth subtask recursively.
+    pub fn get_nth_subtask(&mut self, n: u32) -> (u32, Option<&mut Task>) {
+        if n == 0 {
+            return (0, Some(self));
+        }
+
+        let mut current_index: u32 = 1;
+        for subtask in &mut self.subtasks {
+            match subtask.get_nth_subtask(n - current_index) {
+                (i, Some(t)) => { return (current_index + i, Some(t)) },
+                (i, None) => { current_index += i; }
+            }
+        }
+
+        (current_index, None)
+    }
 }
 
 #[cfg(test)]
@@ -291,4 +316,112 @@ pub mod tests {
             }
         )
     }
+
+    #[test]
+    fn test_subtask_number() {
+        assert_eq!(
+            Task {
+                subtasks: vec![
+                    Task {
+                        subtasks: vec![],
+                        ..Task::test_default_empty()
+                    },
+                    Task {
+                        subtasks: vec![
+                            Task {
+                                subtasks: vec![],
+                                ..Task::test_default_empty()
+                            },
+                            Task {
+                                subtasks: vec![],
+                                ..Task::test_default_empty()
+                            },
+                        ],
+                        ..Task::test_default_empty()
+                    },
+                ],
+                ..Task::test_default_empty()
+            }.subtask_number(),
+            5
+        )
+    }
+
+    #[test]
+    fn test_get_nth_subtask_single_layer() {
+        let mut task = Task {
+            subtasks: vec![
+                Task {
+                    name: "1.".to_string(),
+                    ..Task::test_default_empty()
+                },
+                Task {
+                    name: "2.".to_string(),
+                    ..Task::test_default_empty()
+                },
+            ],
+            ..Task::test_default_empty()
+        };
+
+        assert_eq!(
+            task.get_nth_subtask(2).1.unwrap().name,
+            "2."
+        )
+    }
+
+    #[test]
+    fn test_get_nth_subtask_two_layers_first() {
+        let mut task = Task {
+            subtasks: vec![
+                Task {
+                    name: "1.".to_string(),
+                    subtasks: vec![
+                        Task {
+                            name: "a)".to_string(),
+                            ..Task::test_default_empty()
+                        },
+                        Task {
+                            name: "b)".to_string(),
+                            ..Task::test_default_empty()
+                        },
+                    ],
+                    ..Task::test_default_empty()
+                },
+            ],
+            ..Task::test_default_empty()
+        };
+
+        assert_eq!(
+            task.get_nth_subtask(2).1.unwrap().name,
+            "a)"
+        );
+    }
+
+    #[test]
+    fn test_get_nth_subtask_two_layers_second() {
+        let mut task = Task {
+            subtasks: vec![
+                Task {
+                    name: "1.".to_string(),
+                    subtasks: vec![
+                        Task {
+                            name: "a)".to_string(),
+                            ..Task::test_default_empty()
+                        },
+                        Task {
+                            name: "b)".to_string(),
+                            ..Task::test_default_empty()
+                        },
+                    ],
+                    ..Task::test_default_empty()
+                },
+            ],
+            ..Task::test_default_empty()
+        };
+
+        assert_eq!(
+            task.get_nth_subtask(3).1.unwrap().name,
+            "b)"
+        );
+    }
+
 }
