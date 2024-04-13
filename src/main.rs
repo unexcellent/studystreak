@@ -39,6 +39,10 @@ impl AppState {
         
         task.attempts.push(Attempt::parse("-").unwrap());
     }
+
+    pub fn add_task(&mut self, subtask_depth: u32) {
+        unimplemented!()
+    }
 }
 
 fn main() {
@@ -94,6 +98,11 @@ fn main() {
 
     let state_copy = state.clone();
     ui.global::<Callbacks>().on_add_attempt(move || { state_copy.borrow_mut().add_attempt() });
+
+    let state_copy = state.clone();
+    ui.global::<Callbacks>().on_add_task(move |subtask_depth| {
+        state_copy.borrow_mut().add_task(subtask_depth as u32)
+    });
 
     let state_copy = state.clone();
     populate_start_page(state_copy);

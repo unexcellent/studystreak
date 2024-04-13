@@ -51,7 +51,7 @@ export component SheetPage inherits Rectangle {
         }
 
         ScrollView {
-            viewport-height: (root.task_entry_height + Style.padding.small) * State.tasks.length;
+            viewport-height: (root.task_entry_height + Style.padding.small) * (State.tasks.length + 1);
 
             for task[index] in State.tasks: TaskEntry {
                 task_index: index;
@@ -63,6 +63,24 @@ export component SheetPage inherits Rectangle {
 
                 height: root.task_entry_height;
                 y: (root.task_entry_height + Style.padding.small) * index;
+            }
+
+            for i in max(4, State.tasks[State.tasks.length - 1].depth + 1): Button {
+                text: "+";
+    
+                width: 20px;
+                height: root.task_entry_height;
+                x: self.width * i;
+                y: (root.task_entry_height + Style.padding.small) * State.tasks.length;
+
+                clicked => {
+                    State.active-task-index = State.tasks.length - 1;
+                    Callbacks.add_task(i);
+                    Callbacks.populate_sheet_page(
+                        State.active-module-index,
+                        State.active-sheet-index
+                    )
+                }
             }
         }
     }
