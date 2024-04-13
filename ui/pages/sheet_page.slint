@@ -65,7 +65,7 @@ export component SheetPage inherits Rectangle {
                 y: (root.task_entry_height + Style.padding.small) * index;
             }
 
-            for i in max(4, State.tasks[State.tasks.length - 1].depth + 1): Button {
+            for i in min(4, State.tasks[State.tasks.length - 1].depth + 1): Button {
                 text: "+";
     
                 width: 20px;

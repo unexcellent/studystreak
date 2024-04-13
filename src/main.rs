@@ -41,7 +41,7 @@ impl AppState {
     }
 
     pub fn add_task(&mut self, subtask_depth: u32) {
-        unimplemented!()
+        println!("Congrats, you have found a pointless button! Have an ice cream.")
     }
 }
 
