@@ -16,13 +16,19 @@ export component TaskEntry inherits Rectangle {
 
     property <length> attempt_square_width: 40px;
 
+    property <length> task_column_indentation: 8px * task.depth;
+
     HorizontalLayout {
+        Rectangle {
+            width: root.task_column_indentation;
+        }
+
         LineEdit {
-            text: Callbacks.indent_based_on_depth(task.name, task.depth);
+            text: task.name;
 
             horizontal-alignment: left;
             font-size: 20px;
-            width: root.task_column_width;
+            width: root.task_column_width - root.task_column_indentation;
         }
         LineEdit {
             text: task.topic;

@@ -62,19 +62,6 @@ fn main() -> Result<(), slint::PlatformError> {
         }
     });
 
-    ui.global::<Callbacks>()
-        .on_indent_based_on_depth(|string, depth| {
-            let mut indented_string = String::new();
-
-            for i in 0..depth {
-                indented_string.push(' ');
-            }
-
-            indented_string.push_str(string.as_ref());
-
-            SharedString::from(indented_string)
-        });
-
     populate_start_page(&modules, &ui);
 
     ui.run()
