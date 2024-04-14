@@ -1,11 +1,26 @@
-use serde::Deserialize;
+use serde::{Deserialize, Serialize};
 
-#[derive(Debug, Deserialize, PartialEq, Clone)]
+use crate::structs::task::Task;
+
+#[derive(Debug, Serialize, Deserialize, PartialEq, Clone)]
 pub struct IoTask {
     pub name: String,
     pub topic: Option<String>,
     pub attempts: Vec<String>,
     pub subtask_depth: u8,
+}
+impl From<&Task> for IoTask {
+    fn from(task: &Task) -> Self {
+        IoTask {
+            name: task.name.to_string(),
+            topic: task.topic.to_owned(),
+            attempts: task
+                .attempts.iter()
+                .map(|attempt| attempt.to_string())
+                .collect(),
+            subtask_depth: task.subtask_depth
+        }
+    }
 }
 
 #[cfg(test)]
@@ -28,5 +43,18 @@ pub mod test_defaults {
                 subtask_depth: 1
             }
         }
+    }
+}
+
+#[cfg(test)]
+pub mod tests {
+    use super::*;
+
+    #[test]
+    fn test_from_task() {
+        assert_eq!(
+            IoTask::from(&Task::test_default1()),
+            IoTask::test_default1()
+        )
     }
 }

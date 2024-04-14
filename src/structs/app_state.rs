@@ -1,7 +1,7 @@
-use std::{cell::RefCell, path::PathBuf, rc::Rc};
+use std::{cell::RefCell, ops::Deref, path::PathBuf, rc::Rc};
 use slint::{ComponentHandle, SharedString};
 
-use crate::{io::init_io::init_io, AppWindow, Callbacks, State};
+use crate::{io::{init_io::init_io, io_root::IoRoot}, AppWindow, Callbacks, State};
 
 use super::{attempt::Attempt, module::Module, task::Task};
 
@@ -17,6 +17,13 @@ impl AppState {
             modules: Rc::new(RefCell::new(init_io(&io_path))),
             io_path
         }
+    }
+
+    pub fn update_io(&self, modules: Vec<Module>) {
+        IoRoot::store(
+            &modules, 
+            &self.io_path
+        );
     }
 
     pub fn ui(&self) -> AppWindow {
@@ -41,6 +48,8 @@ impl AppState {
         let task = active_sheet.tasks.get_mut(self.get_active_task_index()).unwrap();
 
         task.attempts.push(Attempt::parse("-").unwrap());
+
+        self.update_io(modules_binding.clone())
     }
 
     pub fn add_task(&mut self, subtask_depth: u8) {
@@ -55,7 +64,9 @@ impl AppState {
                 attempts: Vec::new(),
                 subtask_depth,
             } 
-        )
+        );
+
+        self.update_io(modules_binding.clone())
     }
 
     pub fn edit_task_name(&mut self, task_name: SharedString) {
@@ -68,6 +79,8 @@ impl AppState {
             .get_mut(self.get_active_task_index()).unwrap();
 
         active_task.name = task_name.to_string();
+
+        self.update_io(modules_binding.clone())
     }
 }
 
