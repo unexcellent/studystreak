@@ -12,15 +12,13 @@ use structs::app_state::AppState;
 mod io;
 
 fn main() {
-    let io_path = PathBuf::from(format!("{}/.studystreak.json5", std::env!("HOME")));
-    let modules = io::init_io::init_io(&io_path);
-
     let ui = AppWindow::new().unwrap();
-
-    let state = Rc::new(RefCell::new(AppState {
-        weak_ui: ui.as_weak(),
-        modules: Rc::new(RefCell::new(modules)),
-    }));
+    let state = Rc::new(RefCell::new(
+        AppState::init(
+            PathBuf::from(format!("{}/.studystreak.json5", std::env!("HOME"))),
+            ui.as_weak(),
+        )
+    ));
 
     let state_copy = state.clone();
     ui.callbacks().on_populate_module_page(move |module_index| {
@@ -68,6 +66,11 @@ fn main() {
     let state_copy = state.clone();
     ui.callbacks().on_add_task(move |subtask_depth| {
         state_copy.borrow_mut().add_task(subtask_depth as u8)
+    });
+
+    let state_copy = state.clone();
+    ui.callbacks().on_edit_task_name(move |task_name| {
+        state_copy.borrow_mut().edit_task_name(task_name);
     });
 
     let state_copy = state.clone();

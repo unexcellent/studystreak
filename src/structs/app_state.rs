@@ -1,15 +1,24 @@
-use std::{cell::RefCell, rc::Rc};
-use slint::ComponentHandle;
+use std::{cell::RefCell, path::PathBuf, rc::Rc};
+use slint::{ComponentHandle, SharedString};
 
-use crate::{AppWindow, Callbacks, State};
+use crate::{io::init_io::init_io, AppWindow, Callbacks, State};
 
 use super::{attempt::Attempt, module::Module, task::Task};
 
 pub struct AppState {
     pub weak_ui: slint::Weak<AppWindow>,
     pub modules: Rc<RefCell<Vec<Module>>>,
+    io_path: PathBuf
 }
 impl AppState {
+    pub fn init(io_path: PathBuf, weak_ui: slint::Weak<AppWindow>) -> Self {
+        AppState {
+            weak_ui: weak_ui,
+            modules: Rc::new(RefCell::new(init_io(&io_path))),
+            io_path
+        }
+    }
+
     pub fn ui(&self) -> AppWindow {
         self.weak_ui.upgrade().unwrap()
     }
@@ -47,6 +56,18 @@ impl AppState {
                 subtask_depth,
             } 
         )
+    }
+
+    pub fn edit_task_name(&mut self, task_name: SharedString) {
+        let mut modules_binding = self.modules.borrow_mut();
+            
+        let active_task = modules_binding.get_mut(self.get_active_module_index()).unwrap()
+            .sheets
+            .get_mut(self.get_active_sheet_index()).unwrap()
+            .tasks
+            .get_mut(self.get_active_task_index()).unwrap();
+
+        active_task.name = task_name.to_string();
     }
 }
 

@@ -25,10 +25,16 @@ export component TaskEntry inherits Rectangle {
 
         LineEdit {
             text: task.name;
+            placeholder-text: "Task Name";
 
             horizontal-alignment: left;
             font-size: 20px;
             width: root.task_column_width - root.task_column_indentation;
+
+            edited => {
+                State.active-task-index = task_index;
+                Callbacks.edit_task_name(self.text);
+            }
         }
         LineEdit {
             text: task.topic;
