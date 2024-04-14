@@ -1,6 +1,4 @@
-use std::{
-    collections::HashSet, path::PathBuf
-};
+use std::path::PathBuf;
 
 use crate::io::io_sheet::IoSheet;
 use super::task::Task;
@@ -31,15 +29,6 @@ impl From<&IoSheet> for Sheet {
 }
 
 impl Sheet {
-    pub fn topics(&self) -> HashSet<String> {
-        let mut topics = HashSet::new();
-
-        self.tasks
-            .iter()
-            .for_each(|task| topics.extend(task.topics()));
-
-        topics
-    }
 
     pub fn progress(&self) -> ProgressValues {
         let mut progress = ProgressValues {
@@ -59,18 +48,6 @@ impl Sheet {
         progress
     }
 
-    /// Get the nth subtask recursively.
-    pub fn get_nth_task(&mut self, n: u32) -> Option<&mut Task> {
-        let mut current_index: u32 = 0;
-        for task in &mut self.tasks {
-            match task.get_nth_subtask(n - current_index) {
-                (i, Some(t)) => { return Some(t) },
-                (i, None) => { current_index += i; }
-            }
-        }
-
-        None
-    }
 }
 
 #[cfg(test)]
@@ -82,7 +59,10 @@ pub mod test_defaults {
                 name: "e01".to_string(),
                 tasks_path: PathBuf::from("/path/to/tasks.pdf"),
                 solutions_path: Some(PathBuf::from("/path/to/solutions.pdf")),
-                tasks: vec![Task::test_default1()],
+                tasks: vec![
+                    Task::test_default1(),
+                    Task::test_default2(),
+                ],
             }
         }
     }
@@ -90,10 +70,7 @@ pub mod test_defaults {
 
 #[cfg(test)]
 pub mod tests {
-    use std::{collections::HashSet, vec};
-
     use crate::structs::attempt::Attempt;
-
     use super::*;
 
     #[test]
@@ -102,14 +79,6 @@ pub mod tests {
             Sheet::from(&IoSheet::test_default1()),
             Sheet::test_default1()
         )
-    }
-
-    #[test]
-    fn test_topics() {
-        assert_eq!(
-            Sheet::test_default1().topics(),
-            HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()])
-        );
     }
 
     #[test]
@@ -138,81 +107,4 @@ pub mod tests {
         )
     }
 
-    #[test]
-    fn test_get_nth_subtask_single_layer() {
-        let mut sheet = Sheet {
-            tasks: vec![
-                Task {
-                    name: "1.".to_string(),
-                    ..Task::test_default_empty()
-                },
-                Task {
-                    name: "2.".to_string(),
-                    ..Task::test_default_empty()
-                },
-            ],
-            ..Sheet::test_default1()
-        };
-
-        assert_eq!(
-            sheet.get_nth_task(0).unwrap().name,
-            "1.".to_string(),
-        )
-    }
-
-    #[test]
-    fn test_get_nth_subtask_two_layers_first() {
-        let mut sheet = Sheet {
-            tasks: vec![
-                Task {
-                    name: "1.".to_string(),
-                    subtasks: vec![
-                        Task {
-                            name: "a)".to_string(),
-                            ..Task::test_default_empty()
-                        },
-                        Task {
-                            name: "b)".to_string(),
-                            ..Task::test_default_empty()
-                        },
-                    ],
-                    ..Task::test_default_empty()
-                },
-            ],
-            ..Sheet::test_default1()
-        };
-
-        assert_eq!(
-            sheet.get_nth_task(1).unwrap().name,
-            "a)".to_string(),
-        )
-    }
-
-    #[test]
-    fn test_get_nth_subtask_two_layers_second() {
-        let mut sheet = Sheet {
-            tasks: vec![
-                Task {
-                    name: "1.".to_string(),
-                    subtasks: vec![
-                        Task {
-                            name: "a)".to_string(),
-                            ..Task::test_default_empty()
-                        },
-                        Task {
-                            name: "b)".to_string(),
-                            ..Task::test_default_empty()
-                        },
-                    ],
-                    ..Task::test_default_empty()
-                },
-            ],
-            ..Sheet::test_default1()
-        };
-
-        assert_eq!(
-            sheet.get_nth_task(2).unwrap().name,
-            "b)".to_string(),
-        )
-    }
 }

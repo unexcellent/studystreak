@@ -19,16 +19,10 @@ impl From<&IoModule> for Module {
             .map(|io_sheet| Sheet::from(io_sheet))
             .collect();
 
-        let mut topics = HashSet::new();
-        sheets.iter()
-            .for_each(|sheet| {
-                topics.extend(sheet.topics())
-            });
-
         Module {
             name: io_module.name.to_string(),
             sheets,
-            topics,
+            topics: HashSet::new(), //todo
         }
     }
 }
@@ -61,7 +55,7 @@ pub mod test_defaults {
             Module {
                 name: "Basic Maths 1".to_string(),
                 sheets: vec![Sheet::test_default1()],
-                topics: HashSet::from(["Vectors".to_owned(), "Tractors".to_owned()]),
+                topics: HashSet::new(),
             }
         }
     }

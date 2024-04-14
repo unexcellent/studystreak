@@ -20,7 +20,10 @@ pub mod test_defaults {
                 name: "e01".to_string(),
                 tasks_path: "/path/to/tasks.pdf".to_owned(),
                 solutions_path: Some("/path/to/solutions.pdf".to_owned()),
-                tasks: vec![IoTask::test_default1()],
+                tasks: vec![
+                    IoTask::test_default1(),
+                    IoTask::test_default2(),
+                ],
             }
         }
     }

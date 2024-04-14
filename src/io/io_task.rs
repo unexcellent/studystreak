@@ -5,7 +5,7 @@ pub struct IoTask {
     pub name: String,
     pub topic: Option<String>,
     pub attempts: Vec<String>,
-    pub subtasks: Vec<IoTask>,
+    pub subtask_depth: u8,
 }
 
 #[cfg(test)]
@@ -17,7 +17,7 @@ pub mod test_defaults {
                 name: "1.".to_string(),
                 topic: Some("Vectors".to_owned()),
                 attempts: vec!["h".to_owned(), "v".to_owned()],
-                subtasks: vec![IoTask::test_default2()],
+                subtask_depth: 0
             }
         }
         pub fn test_default2() -> IoTask {
@@ -25,7 +25,7 @@ pub mod test_defaults {
                 name: "a)".to_string(),
                 topic: Some("Tractors".to_owned()),
                 attempts: vec!["9/11".to_owned()],
-                subtasks: Vec::new(),
+                subtask_depth: 1
             }
         }
     }

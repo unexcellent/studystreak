@@ -35,8 +35,8 @@ impl AppState {
         let active_module = modules_binding.get_mut(self.get_active_module_index()).unwrap();
         let active_sheet = active_module.sheets.get_mut(self.get_active_sheet_index()).unwrap();
 
-        let task = active_sheet.get_nth_task(self.get_active_task_index() as u32).unwrap();
-        
+        let task = active_sheet.tasks.get_mut(self.get_active_task_index()).unwrap();
+
         task.attempts.push(Attempt::parse("-").unwrap());
     }
 
@@ -88,7 +88,7 @@ fn main() {
 
         let mut slint_tasks: Rc<VecModel<SlintTask>> = Rc::new(VecModel::default());
         for task in &sheet.tasks {
-            slint_tasks.extend(task.to_slint(0));
+            slint_tasks.push(task.to_slint());
         }
 
         state_binding.ui()

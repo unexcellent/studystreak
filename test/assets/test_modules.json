@@ -13,19 +13,18 @@
                             "name": "1.",
                             "topic": "Vectors",
                             "attempts": [],
-                            "subtasks": [
-                                {
-                                    "name": "a)",
-                                    "attempts": ["x", "5/6", "v"],
-                                    "subtasks": []
-                                },
-                                {
-                                    "name": "b)",
-                                    "topic": "Scalar Product",
-                                    "attempts": ["h", "-"],
-                                    "subtasks": []
-                                }
-                            ]
+                            "subtask_depth": 0
+                        },
+                        {
+                            "name": "a)",
+                            "attempts": ["x", "5/6", "v"],
+                            "subtask_depth": 1
+                        },
+                        {
+                            "name": "b)",
+                            "topic": "Scalar Product",
+                            "attempts": ["h", "-"],
+                            "subtask_depth": 1
                         }
                     ]
                 }
