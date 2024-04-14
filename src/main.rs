@@ -21,13 +21,13 @@ impl AppState {
     }
 
     pub fn get_active_module_index(&self) -> usize {
-        self.ui().global::<State>().get_active_module_index() as usize
+        self.ui().state().get_active_module_index() as usize
     }
     pub fn get_active_sheet_index(&self) -> usize {
-        self.ui().global::<State>().get_active_sheet_index() as usize
+        self.ui().state().get_active_sheet_index() as usize
     }
     pub fn get_active_task_index(&self) -> usize {
-        self.ui().global::<State>().get_active_task_index() as usize
+        self.ui().state().get_active_task_index() as usize
     }
 
     pub fn add_attempt(&mut self) {
@@ -56,6 +56,15 @@ impl AppState {
     }
 }
 
+impl AppWindow {
+    pub fn callbacks(&self) -> Callbacks<'_> {
+        self.global::<Callbacks>()
+    }
+    pub fn state(&self) -> State<'_> {
+        self.global::<State>()
+    }
+}
+
 fn main() {
     let io_path = PathBuf::from(format!("{}/.studystreak.json5", std::env!("HOME")));
     let modules = io::init_io::init_io(&io_path);
@@ -68,7 +77,7 @@ fn main() {
     }));
 
     let state_copy = state.clone();
-    ui.global::<Callbacks>().on_populate_module_page(move |module_index| {
+    ui.callbacks().on_populate_module_page(move |module_index| {
         let mut state_binding = state_copy.try_borrow().unwrap();
         let mut modules_binding = state_binding.modules.try_borrow().unwrap();
         
@@ -83,12 +92,12 @@ fn main() {
         }
 
         state_binding.ui()
-            .global::<State>()
+            .state()
             .set_sheets(ModelRc::from(slint_sheets));
     });
 
     let state_copy = state.clone();
-    ui.global::<Callbacks>().on_populate_sheet_page(move |module_index, sheet_index| {
+    ui.callbacks().on_populate_sheet_page(move |module_index, sheet_index| {
         let mut state_binding = state_copy.try_borrow().unwrap();
         let mut modules_binding = state_binding.modules.try_borrow().unwrap();
 
@@ -103,15 +112,15 @@ fn main() {
         }
 
         state_binding.ui()
-            .global::<State>()
+            .state()
             .set_tasks(ModelRc::from(slint_tasks));
     });
 
     let state_copy = state.clone();
-    ui.global::<Callbacks>().on_add_attempt(move || { state_copy.borrow_mut().add_attempt() });
+    ui.callbacks().on_add_attempt(move || { state_copy.borrow_mut().add_attempt() });
 
     let state_copy = state.clone();
-    ui.global::<Callbacks>().on_add_task(move |subtask_depth| {
+    ui.callbacks().on_add_task(move |subtask_depth| {
         state_copy.borrow_mut().add_task(subtask_depth as u8)
     });
 
@@ -133,6 +142,6 @@ fn populate_start_page(state: Rc<RefCell<AppState>>) {
         });
     }
 
-    state_binding.ui().global::<State>()
+    state_binding.ui().state()
         .set_modules(ModelRc::from(slint_modules));
 }
