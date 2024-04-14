@@ -6,7 +6,7 @@ slint::include_modules!();
 #[path = "structs/mod.rs"]
 mod structs;
 use slint::{ModelRc, SharedString, VecModel};
-use structs::{attempt::Attempt, module::Module};
+use structs::{attempt::Attempt, module::Module, task::Task};
 
 #[path = "io/mod.rs"]
 mod io;
@@ -40,8 +40,19 @@ impl AppState {
         task.attempts.push(Attempt::parse("-").unwrap());
     }
 
-    pub fn add_task(&mut self, subtask_depth: u32) {
-        println!("Congrats, you have found a pointless button! Have an ice cream.")
+    pub fn add_task(&mut self, subtask_depth: u8) {
+        let mut modules_binding = self.modules.borrow_mut();
+        let active_module = modules_binding.get_mut(self.get_active_module_index()).unwrap();
+        let active_sheet = active_module.sheets.get_mut(self.get_active_sheet_index()).unwrap();
+
+        active_sheet.tasks.push(
+            Task {
+                name: "".to_string(),
+                topic: None,
+                attempts: Vec::new(),
+                subtask_depth,
+            } 
+        )
     }
 }
 
@@ -101,7 +112,7 @@ fn main() {
 
     let state_copy = state.clone();
     ui.global::<Callbacks>().on_add_task(move |subtask_depth| {
-        state_copy.borrow_mut().add_task(subtask_depth as u32)
+        state_copy.borrow_mut().add_task(subtask_depth as u8)
     });
 
     let state_copy = state.clone();
